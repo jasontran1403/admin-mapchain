@@ -3,19 +3,19 @@ import React, { useState } from 'react';
 type Transaction = {
   code: string;
   date: string;
-  walletAddress: string;
-  displayName: string,
   status: number;
   amount: number;
-  fee: number;
+  investmentCode: string;
   currency: string;
+  walletAddress: string;
+  displayName: string;
 };
 
-interface TransactionSwapProps {
+interface CommissionTableProps {
   data: Transaction[];
 }
 
-const TransactionSwapr: React.FC<TransactionSwapProps> = ({ data }) => {
+const CommissionTable: React.FC<CommissionTableProps> = ({ data }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 6; // Set the number of items per page
@@ -36,11 +36,12 @@ const TransactionSwapr: React.FC<TransactionSwapProps> = ({ data }) => {
   };
 
   const filteredData = data.filter((transaction) => {
-    const { code, walletAddress, displayName } = transaction;
+    const { code, investmentCode, walletAddress, displayName } = transaction;
     return (
       code.toLowerCase().includes(searchQuery) ||
+      investmentCode.toLowerCase().includes(searchQuery) ||
       walletAddress.toLowerCase().includes(searchQuery) ||
-      displayName.toLowerCase().includes(searchQuery)
+      (displayName && displayName.toLowerCase().includes(searchQuery))
     );
   });
 
@@ -90,6 +91,9 @@ const TransactionSwapr: React.FC<TransactionSwapProps> = ({ data }) => {
                 Amount
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                Investment
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 User
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
@@ -111,22 +115,21 @@ const TransactionSwapr: React.FC<TransactionSwapProps> = ({ data }) => {
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <h5 className="font-medium text-black dark:text-white">
+                  <p className="text-black dark:text-white">
                     {packageItem.amount} {packageItem.currency}
-                  </h5>
-                  <p className="text-sm">
-                    {packageItem.fee} {packageItem.currency}
                   </p>
                 </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark ">
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p className="text-black dark:text-white">
+                    {packageItem.investmentCode}
+                  </p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <h5 className="font-medium text-black dark:text-white">
                     {formatWalletAddress(packageItem.walletAddress)}
                   </h5>
-                  <p className="text-sm">
-                    {packageItem.displayName}
-                  </p>
+                  <p className="text-sm">{packageItem.displayName}</p>
                 </td>
-                
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p
                     className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
@@ -199,4 +202,4 @@ const TransactionSwapr: React.FC<TransactionSwapProps> = ({ data }) => {
   );
 };
 
-export default TransactionSwapr;
+export default CommissionTable;

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Axios from 'axios';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import TransactionDeposit from '../components/Tables/TransactionDeposit';
+import { URL } from "../types/constant";
 
 const DepositTable = () => {
   const [accessToken, setAccessToken] = useState('');
@@ -19,7 +20,7 @@ const DepositTable = () => {
   useEffect(() => {
     let config = {
       method: 'get',
-      url: 'http://localhost:8888/api/v1/admin/deposit',
+      url: `${URL}admin/deposit`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "ngrok-skip-browser-warning": "69420",

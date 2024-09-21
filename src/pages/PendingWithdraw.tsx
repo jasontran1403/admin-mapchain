@@ -5,6 +5,7 @@ import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import PendingWithdrawTable from '../components/Tables/PendingWithdrawTable';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { URL } from "../types/constant";
 
 const PendingWithdraw = () => {
   const [accessToken, setAccessToken] = useState('');
@@ -24,7 +25,7 @@ const PendingWithdraw = () => {
   useEffect(() => {
     let config = {
       method: 'get',
-      url: 'http://localhost:8888/api/v1/admin/pending-withdraw',
+      url: `${URL}admin/pending-withdraw`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'ngrok-skip-browser-warning': '69420',
@@ -49,7 +50,7 @@ const PendingWithdraw = () => {
 
     let config = {
       method: 'get',
-      url: `http://localhost:8888/api/v1/admin/approve/${code}`,
+      url: `${URL}admin/approve/${code}`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'ngrok-skip-browser-warning': '69420',

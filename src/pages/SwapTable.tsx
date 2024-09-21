@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Axios from "axios";
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import TransactionSwap from '../components/Tables/TransactionSwap';
+import { URL } from "../types/constant";
 
 const SwapTable = () => {
   const [accessToken, setAccessToken] = useState('');
@@ -20,7 +21,7 @@ const SwapTable = () => {
   useEffect(() => {
     let config = {
       method: 'get',
-      url: 'http://localhost:8888/api/v1/admin/swap',
+      url: `${URL}admin/swap`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "ngrok-skip-browser-warning": "69420",

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Axios from "axios";
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import TransactionWithdraw from '../components/Tables/TransactionWithdraw';
+import { URL } from "../types/constant";
 
 const WithdrawTable = () => {
   const [accessToken, setAccessToken] = useState('');
@@ -19,7 +20,7 @@ const WithdrawTable = () => {
   useEffect(() => {
     let config = {
       method: 'get',
-      url: 'http://localhost:8888/api/v1/admin/withdraw',
+      url: `${URL}admin/withdraw`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "ngrok-skip-browser-warning": "69420",

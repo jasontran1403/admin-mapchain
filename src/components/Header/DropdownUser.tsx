@@ -5,6 +5,7 @@ import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-01.png';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { URL } from "../../types/constant";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -17,7 +18,7 @@ const DropdownUser = () => {
 
     let config = {
       method: 'get',
-      url: `http://localhost:8888/api/v1/auth/logout/${accessToken}`,
+      url: `${URL}auth/logout/${accessToken}`,
       headers: {
         'ngrok-skip-browser-warning': '69420',
       },

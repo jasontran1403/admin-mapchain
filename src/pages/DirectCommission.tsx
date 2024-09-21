@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import Axios from "axios";
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import TableOne from '../components/Tables/TableOne';
-import TableThree from '../components/Tables/TableThree';
-import TableTwo from '../components/Tables/TableTwo';
+import CommissionTable from '../components/Tables/CommissionTable';
+import { URL } from "../types/constant";
 
 const DirectCommission = () => {
   const [accessToken, setAccessToken] = useState('');
+  const [listDirectCommission, setListDirectCommission] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -16,15 +17,33 @@ const DirectCommission = () => {
     }
   }, []);
 
+  useEffect(() => {
+    let config = {
+      method: 'get',
+      url: `${URL}admin/commission/1`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "ngrok-skip-browser-warning": "69420",
+      },
+    };
+
+    Axios.request(config)
+      .then((response) => {
+        setListDirectCommission(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [accessToken]);
+
   console.log(accessToken);
-  
   
   return (
     <>
-      <Breadcrumb pageName="Direct commission table" />
+      <Breadcrumb pageName="Direct commission transactions" />
 
       <div className="flex flex-col gap-10">
-        <TableThree />
+        <CommissionTable data={listDirectCommission} />
       </div>
     </>
   );

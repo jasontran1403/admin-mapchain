@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
-import Axios from "axios";
+import Axios from 'axios';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import TableThree from '../components/Tables/TableThree';
+import PendingDepositTable from '../components/Tables/PendingDepositTable';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { URL } from "../types/constant";
 
 const PendingDeposit = () => {
   const [accessToken, setAccessToken] = useState('');
-  const [pendingDeposit, setPendingDeposit] = useState([]);
+  const [listUnCollect, setListUnCollect] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -22,26 +25,67 @@ const PendingDeposit = () => {
   useEffect(() => {
     let config = {
       method: 'get',
-      url: 'http://localhost:8888/api/v1/admin/pending-deposit',
-      headers: { 
-        'Authorization': `Bearer ${accessToken}`,
-        "ngrok-skip-browser-warning": "69420",
+      maxBodyLength: Infinity,
+      url: `${URL}admin/pending-deposit`,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+        'ngrok-skip-browser-warning': '69420',
+      },
+    };
+
+    Axios.request(config)
+      .then((response) => {
+        setListUnCollect(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [accessToken]);
+
+  const handleCollectAll = () => {};
+
+  const handleCollectWallet = (walletAddress: string) => {
+    if (walletAddress === null || walletAddress === '') {
+      return;
+    }
+
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `${URL}admin/pending-deposit/${walletAddress}`,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization:
+          `Bearer ${accessToken}`,
+          "ngrok-skip-browser-warning": "69420",
       }
     };
-    
-    Axios.request(config)
-    .then((response) => {
-      setPendingDeposit(response.data);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-    
-  }, [accessToken]);
-  
-  
-  const handleCollectAll = () => {
 
+    Axios
+      .request(config)
+      .then((response) => {
+        if (response.data === "ok") {
+          toast.success("Collect amount success", {
+            position: 'top-right',
+            autoClose: 3000,
+            onClick: () => {
+              window.location.reload();
+            },
+          });
+        } else {
+          toast.error(response.data, {
+            position: 'top-right',
+            autoClose: 3000
+          });
+        }
+      })
+      .catch((error) => {
+        toast.error("Failed when collect", {
+          position: 'top-right',
+          autoClose: 3000
+        });
+      });
   };
 
   return (
@@ -59,8 +103,12 @@ const PendingDeposit = () => {
         </div>
       </div>
       <div className="flex flex-col gap-10">
-        <TableThree />
+        <PendingDepositTable
+          data={listUnCollect}
+          handleCollect={handleCollectWallet}
+        />
       </div>
+      <ToastContainer />
     </>
   );
 };

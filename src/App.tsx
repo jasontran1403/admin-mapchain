@@ -29,6 +29,7 @@ import BinaryCommission from './pages/BinaryCommission';
 import LeaderCommission from './pages/LeaderCommission';
 import PopCommission from './pages/PopCommission';
 import DailyReward from './pages/DailyReward';
+import AdminInfo from './pages/AdminInfo';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -102,15 +103,6 @@ function App() {
           }
         />
         <Route
-          path="/settings"
-          element={
-            <>
-              <PageTitle title="Settings | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <Settings />
-            </>
-          }
-        />
-        <Route
           path="/chart"
           element={
             <>
@@ -160,6 +152,24 @@ function App() {
             <>
               <PageTitle title="Pending Deposit" />
               <PendingDeposit />
+            </>
+          }
+        />
+        <Route
+          path="/user/:id"
+          element={
+            <>
+              <PageTitle title="User page" />
+              <Settings />
+            </>
+          }
+        />
+        <Route
+          path="/tools"
+          element={
+            <>
+              <PageTitle title="Admin Info" />
+              <AdminInfo />
             </>
           }
         />

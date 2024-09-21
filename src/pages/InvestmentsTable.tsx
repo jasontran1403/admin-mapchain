@@ -5,6 +5,7 @@ import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import InvestmentTable from '../components/Tables/InvestmentTable';
+import { URL } from "../types/constant";
 
 const InvestmentsTable = () => {
   const [accessToken, setAccessToken] = useState('');
@@ -23,7 +24,7 @@ const InvestmentsTable = () => {
 
     let config = {
       method: 'get',
-      url: 'http://localhost:8888/api/v1/admin/investments',
+      url: `${URL}admin/investments`,
       headers: { 
         'Authorization': `Bearer ${accessToken}`,
         "ngrok-skip-browser-warning": "69420",
@@ -43,7 +44,7 @@ const InvestmentsTable = () => {
   const handlePayDaily = () => {
     let config = {
       method: 'get',
-      url: 'http://localhost:8888/api/v1/admin/pay-daily',
+      url: `${URL}admin/pay-daily`,
       headers: {
         Authorization:
           `Bearer ${accessToken}`,

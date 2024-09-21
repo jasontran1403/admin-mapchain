@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { URL } from "../../types/constant";
 
 type User = {
   walletAddress: string;
@@ -29,6 +30,14 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
+  const handleUserPage = (userWallet) => {
+    if (userWallet === null || userWallet === '') {
+      return;
+    }
+
+    window.location.href = `/user/${userWallet}`;
+  }
+
   // Filter users based on search term
   const filteredUsers = data.filter(
     (user) =>
@@ -54,7 +63,7 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
 
     let config = {
       method: 'get',
-      url: `http://localhost:8888/api/v1/admin/lock/${userWalletAddress}`,
+      url: `${URL}admin/lock/${userWalletAddress}`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'ngrok-skip-browser-warning': '69420',
@@ -87,7 +96,7 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
         placeholder="Search by Wallet Address or Display Name"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="mb-4 p-2 border rounded"
+        className="mb-4 w-full p-2 border border-gray-300 rounded"
       />
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto">
@@ -116,20 +125,20 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
           <tbody>
             {currentUsers.map((user, idx) => (
               <tr key={idx}>
-                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
                     {user.walletAddress}
                   </p>
                 </td>
-                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
                     {user.displayName || 'N/A'} {/* Handle null displayName */}
                   </p>
                 </td>
-                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">{user.sales}</p>
                 </td>
-                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">{user.rank}</p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -146,7 +155,8 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
                     {/* Eye Icon */}
-                    <button className="hover:text-primary">
+                    <button className="hover:text-primary"
+                    onClick={() => handleUserPage(user.walletAddress)}>
                       <svg
                         className="fill-current"
                         width="18"
@@ -192,19 +202,48 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
       </div>
       {/* Pagination Controls */}
       <div className="mt-4 flex justify-center">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index}
-            onClick={() => handlePageChange(index + 1)}
-            className={`mx-1 px-3 py-1 rounded ${
-              currentPage === index + 1
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-300'
-            }`}
-          >
-            {index + 1}
-          </button>
-        ))}
+        <button
+          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+          className={`mx-1 px-3 py-1 rounded ${
+            currentPage === 1 ? 'bg-gray-300' : 'bg-gray-300 text-black'
+          }`}
+          disabled={currentPage === 1}
+        >
+          Prev
+        </button>
+        {Array.from({ length: Math.min(3, totalPages) }, (_, index) => {
+          const startPage = Math.max(
+            1,
+            Math.min(currentPage - 1, totalPages - 2),
+          ); // Ensure the range ends at totalPages
+          const pageIndex = startPage + index;
+          return (
+            <button
+              key={pageIndex}
+              onClick={() => handlePageChange(pageIndex)}
+              className={`mx-1 px-3 py-1 rounded ${
+                currentPage === pageIndex
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-300'
+              }`}
+            >
+              {pageIndex}
+            </button>
+          );
+        })}
+        <button
+          onClick={() =>
+            handlePageChange(Math.min(totalPages, currentPage + 1))
+          }
+          className={`mx-1 px-3 py-1 rounded ${
+            currentPage === totalPages
+              ? 'bg-gray-300'
+              : 'bg-gray-300 text-black'
+          }`}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
       </div>
     </div>
   );

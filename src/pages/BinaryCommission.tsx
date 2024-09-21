@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
+import Axios from "axios";
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import TableThree from '../components/Tables/TableThree';
+import CommissionTable from '../components/Tables/CommissionTable';
+import { URL } from "../types/constant";
 
 const BinaryCommission = () => {
   const [accessToken, setAccessToken] = useState('');
+  const [listDirectCommission, setListDirectCommission] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -14,14 +17,33 @@ const BinaryCommission = () => {
     }
   }, []);
 
-  console.log(accessToken);
+  useEffect(() => {
+    let config = {
+      method: 'get',
+      url: `admin/commission/2`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "ngrok-skip-browser-warning": "69420",
+      },
+    };
 
+    Axios.request(config)
+      .then((response) => {
+        setListDirectCommission(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [accessToken]);
+
+  console.log(accessToken);
+  
   return (
     <>
-      <Breadcrumb pageName="Binary commission table" />
+      <Breadcrumb pageName="Binary commission transactions" />
 
       <div className="flex flex-col gap-10">
-        <TableThree />
+        <CommissionTable data={listDirectCommission} />
       </div>
     </>
   );

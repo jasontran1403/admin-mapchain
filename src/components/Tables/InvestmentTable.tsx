@@ -70,7 +70,7 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({ data }) => {
                     {packageItem.displayName.length > 0 ? packageItem.displayName : packageItem.walletAddress}
                   </p>
                 </td>
-                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <h5 className="font-medium text-black dark:text-white">{packageItem.packageName}</h5>
                   <p className="text-sm">{packageItem.packagePrice} MCT</p>
                 </td>
@@ -86,19 +86,48 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({ data }) => {
       </div>
       {/* Pagination controls */}
       <div className="mt-4 flex justify-center">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index}
-            onClick={() => handlePageChange(index + 1)}
-            className={`mx-1 px-3 py-1 rounded ${
-              currentPage === index + 1
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-300'
-            }`}
-          >
-            {index + 1}
-          </button>
-        ))}
+        <button
+          onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+          className={`mx-1 px-3 py-1 rounded ${
+            currentPage === 1 ? 'bg-gray-300' : 'bg-gray-300 text-black'
+          }`}
+          disabled={currentPage === 1}
+        >
+          Prev
+        </button>
+        {Array.from({ length: Math.min(3, totalPages) }, (_, index) => {
+          const startPage = Math.max(
+            1,
+            Math.min(currentPage - 1, totalPages - 2),
+          ); // Ensure the range ends at totalPages
+          const pageIndex = startPage + index;
+          return (
+            <button
+              key={pageIndex}
+              onClick={() => handlePageChange(pageIndex)}
+              className={`mx-1 px-3 py-1 rounded ${
+                currentPage === pageIndex
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-300'
+              }`}
+            >
+              {pageIndex}
+            </button>
+          );
+        })}
+        <button
+          onClick={() =>
+            handlePageChange(Math.min(totalPages, currentPage + 1))
+          }
+          className={`mx-1 px-3 py-1 rounded ${
+            currentPage === totalPages
+              ? 'bg-gray-300'
+              : 'bg-gray-300 text-black'
+          }`}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
       </div>
     </div>
   );

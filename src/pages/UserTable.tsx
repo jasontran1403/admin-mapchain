@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Axios from "axios";
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import UsersTable from '../components/Tables/UserTable';
+import { URL } from "../types/constant";
 
 const UserTable = () => {
   const [accessToken, setAccessToken] = useState('');
@@ -20,7 +21,7 @@ const UserTable = () => {
     if (accessToken === null || accessToken === '') return;
     let config = {
       method: 'get',
-      url: 'http://localhost:8888/api/v1/admin/users',
+      url: `${URL}admin/users`,
       headers: { 
         'Authorization': `Bearer ${accessToken}`,
         "ngrok-skip-browser-warning": "69420",
