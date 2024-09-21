@@ -20,7 +20,7 @@ const BinaryCommission = () => {
   useEffect(() => {
     let config = {
       method: 'get',
-      url: `admin/commission/2`,
+      url: `${URL}admin/commission/2`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "ngrok-skip-browser-warning": "69420",
