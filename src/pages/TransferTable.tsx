@@ -4,6 +4,8 @@ import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import TransactionTransfer from '../components/Tables/TransactionTransfer';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import 'sweetalert2/src/sweetalert2.scss';
 import { URL } from "../types/constant";
 
 const TransferTable = () => {
@@ -100,12 +102,21 @@ const TransferTable = () => {
       .request(config)
       .then((response) => {
         if (response.data === "Transfer success") {
-          toast.success(response.data, {
-            position: 'top-right',
-            autoClose: 3000,
-            onClick: () => {
-              window.location.reload();
-            },
+          // toast.success(response.data, {
+          //   position: 'top-right',
+          //   autoClose: 3000,
+          //   onClick: () => {
+          //     window.location.reload();
+          //   },
+          // });
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: response.data,
+            showConfirmButton: false,
+            timer: 2000,
+          }).then(() => {
+            window.location.reload();
           });
         } else {
           toast.error(response.data, {

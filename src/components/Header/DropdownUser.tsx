@@ -6,6 +6,8 @@ import UserOne from '../../images/user/user-01.png';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { URL } from "../../types/constant";
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import 'sweetalert2/src/sweetalert2.scss';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -27,13 +29,15 @@ const DropdownUser = () => {
     Axios.request(config)
       .then((response) => {
         console.log(response.data);
-        toast.success('Sign out success!', {
-          position: 'top-right',
-          autoClose: 1500,
-          onClick: () => {
-            localStorage.removeItem('access_token');
-            window.location.href = '/auth/signin';
-          },
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Sign out success',
+          showConfirmButton: false,
+          timer: 2000,
+        }).then(() => {
+          localStorage.removeItem('access_token');
+          window.location.href = "/auth/signin";
         });
       })
       .catch((error) => {

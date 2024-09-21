@@ -6,6 +6,8 @@ import PendingWithdrawTable from '../components/Tables/PendingWithdrawTable';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { URL } from "../types/constant";
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import 'sweetalert2/src/sweetalert2.scss';
 
 const PendingWithdraw = () => {
   const [accessToken, setAccessToken] = useState('');
@@ -60,10 +62,19 @@ const PendingWithdraw = () => {
     Axios.request(config)
       .then((response) => {
         if (response.data === "ok") {
-          toast.success('Withdraw order approve success!', {
-            position: 'top-right',
-            autoClose: 3000,
-            onClick: () => window.location.reload(),
+          // toast.success('Withdraw order approve success!', {
+          //   position: 'top-right',
+          //   autoClose: 3000,
+          //   onClick: () => window.location.reload(),
+          // });
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Withdraw order approve success',
+            showConfirmButton: false,
+            timer: 2000,
+          }).then(() => {
+            window.location.reload();
           });
         } else {
           toast.error(response.data, {

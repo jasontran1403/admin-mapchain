@@ -5,6 +5,8 @@ import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { URL } from "../types/constant";
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import 'sweetalert2/src/sweetalert2.scss';
 
 const Settings = () => {
   const [accessToken, setAccessToken] = useState('');
@@ -27,6 +29,7 @@ const Settings = () => {
       url: `${URL}admin/user/${id}`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        'ngrok-skip-browser-warning': '69420',
       },
     };
 
@@ -87,10 +90,19 @@ const Settings = () => {
     Axios.request(config)
       .then((response) => {
         if (response.data === 'Update user detail success') {
-          toast.success(response.data, {
-            position: 'top-right',
-            autoClose: 3000,
-            onClick: () => window.location.reload(),
+          // toast.success(response.data, {
+          //   position: 'top-right',
+          //   autoClose: 3000,
+          //   onClick: () => window.location.reload(),
+          // });
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Update user detail success',
+            showConfirmButton: false,
+            timer: 2000,
+          }).then(() => {
+            window.location.reload();
           });
         } else {
           toast.error(response.data, {

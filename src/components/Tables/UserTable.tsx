@@ -3,6 +3,8 @@ import Axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { URL } from "../../types/constant";
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import 'sweetalert2/src/sweetalert2.scss';
 
 type User = {
   walletAddress: string;
@@ -73,12 +75,21 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
     Axios.request(config)
       .then((response) => {
         console.log(response.data);
-        toast.success('Toggle status success!', {
-          position: 'top-right',
-          autoClose: 1500,
-          onClick: () => {
-            window.location.reload(); 
-          },
+        // toast.success('Toggle status success!', {
+        //   position: 'top-right',
+        //   autoClose: 1500,
+        //   onClick: () => {
+        //     window.location.reload(); 
+        //   },
+        // });
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Toggle status success',
+          showConfirmButton: false,
+          timer: 2000,
+        }).then(() => {
+          window.location.reload(); 
         });
       })
       .catch((error) => {

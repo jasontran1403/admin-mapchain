@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import 'sweetalert2/src/sweetalert2.scss';
 import { URL } from "../../types/constant";
 
 type Withdraw = {
@@ -57,16 +59,26 @@ const PendingWithdrawTable: React.FC<WithdrawTableProps> = ({ data, handleApprov
       url: `${URL}admin/cancel-withdraw/${withdrawCode}`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        'ngrok-skip-browser-warning': '69420',
       },
     };
 
     Axios.request(config)
       .then(response => {
         if (response.data === 'ok') {
-          toast.success('Cancel withdraw order success!', {
-            position: 'top-right',
-            autoClose: 3000,
-            onClick: () => window.location.reload(),
+          // toast.success('Cancel withdraw order success!', {
+          //   position: 'top-right',
+          //   autoClose: 3000,
+          //   onClick: () => window.location.reload(),
+          // });
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Sign out success',
+            showConfirmButton: false,
+            timer: 2000,
+          }).then(() => {
+            window.location.reload();
           });
         }
       })

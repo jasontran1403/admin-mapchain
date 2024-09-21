@@ -4,6 +4,8 @@ import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { URL } from "../types/constant";
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import 'sweetalert2/src/sweetalert2.scss';
 
 const AdminInfo = () => {
   const [accessToken, setAccessToken] = useState('');
@@ -73,12 +75,21 @@ const AdminInfo = () => {
       .request(config)
       .then((response) => {
         if (response.data === "ok") {
-          toast.success("Update info success", {
-            position: 'top-right',
-            autoClose: 3000,
-            onClick: () => {
-              window.location.reload();
-            },
+          // toast.success("Update info success", {
+          //   position: 'top-right',
+          //   autoClose: 3000,
+          //   onClick: () => {
+          //     window.location.reload();
+          //   },
+          // });
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Update info success',
+            showConfirmButton: false,
+            timer: 2000,
+          }).then(() => {
+            window.location.reload();
           });
         } else {
           toast.error(response.data, {

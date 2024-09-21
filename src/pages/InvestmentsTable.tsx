@@ -6,6 +6,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import InvestmentTable from '../components/Tables/InvestmentTable';
 import { URL } from "../types/constant";
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import 'sweetalert2/src/sweetalert2.scss';
 
 const InvestmentsTable = () => {
   const [accessToken, setAccessToken] = useState('');
@@ -57,17 +59,27 @@ const InvestmentsTable = () => {
       .then((response) => {
         console.log(response.data);
         if (response.data === "ok") {
-          toast.success('Daily reward pay success!', {
-            position: 'top-right',
-            autoClose: 3000,
-            onClick: () => {
-              window.location.reload();
-            },
+          // toast.success('Daily reward pay success!', {
+          //   position: 'top-right',
+          //   autoClose: 3000,
+          //   onClick: () => {
+          //     window.location.reload();
+          //   },
+          // });
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Daily reward pay success',
+            showConfirmButton: false,
+            timer: 2000,
+          }).then(() => {
+            window.location.reload();
           });
         } 
       })
       .catch((error) => {
-        toast.success(error, {
+        console.log(error);
+        toast.error(error, {
           position: 'top-right',
           autoClose: 1500,
         });
