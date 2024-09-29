@@ -246,8 +246,9 @@ const Settings = () => {
                         type="text"
                         name="rootId"
                         id="rootId"
-                        value={userDetail.rootId || ''}
-                        onChange={handleInputChange} // Handle change
+                        value={userDetail.rootId}
+                        // onChange={handleInputChange} // Handle change
+                        readOnly
                       />
                     </div>
                   </div>
@@ -273,7 +274,7 @@ const Settings = () => {
                       </div>
                     </div>
 
-                    <div className="w-full sm:w-1/2">
+                    {/* <div className="w-full sm:w-1/2">
                       <label
                         htmlFor="toggle4"
                         className="mb-3 block text-sm font-medium text-black dark:text-white"
@@ -309,7 +310,7 @@ const Settings = () => {
                           ></div>
                         </div>
                       </label>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="flex justify-end gap-4.5">

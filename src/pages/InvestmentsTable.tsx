@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import Axios from "axios";
+import Axios from 'axios';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import InvestmentTable from '../components/Tables/InvestmentTable';
-import { URL } from "../types/constant";
+import { URL } from '../types/constant';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
 
@@ -23,24 +23,22 @@ const InvestmentsTable = () => {
   }, []);
 
   useEffect(() => {
-
     let config = {
       method: 'get',
       url: `${URL}admin/investments`,
-      headers: { 
-        'Authorization': `Bearer ${accessToken}`,
-        "ngrok-skip-browser-warning": "69420",
-      }
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'ngrok-skip-browser-warning': '69420',
+      },
     };
-    
+
     Axios.request(config)
-    .then((response) => {
-      setListInvestment(response.data);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-    
+      .then((response) => {
+        setListInvestment(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, [accessToken]);
 
   const handlePayDaily = () => {
@@ -48,17 +46,15 @@ const InvestmentsTable = () => {
       method: 'get',
       url: `${URL}admin/pay-daily`,
       headers: {
-        Authorization:
-          `Bearer ${accessToken}`,
-          "ngrok-skip-browser-warning": "69420",
+        Authorization: `Bearer ${accessToken}`,
+        'ngrok-skip-browser-warning': '69420',
       },
     };
 
-    Axios
-      .request(config)
+    Axios.request(config)
       .then((response) => {
         console.log(response.data);
-        if (response.data === "ok") {
+        if (response.data === 'ok') {
           // toast.success('Daily reward pay success!', {
           //   position: 'top-right',
           //   autoClose: 3000,
@@ -75,7 +71,7 @@ const InvestmentsTable = () => {
           }).then(() => {
             window.location.reload();
           });
-        } 
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -89,7 +85,7 @@ const InvestmentsTable = () => {
   return (
     <>
       <Breadcrumb pageName="Investments table" />
-      <div className="p-4 md:p-6 xl:p-9">
+      {/* <div className="p-4 md:p-6 xl:p-9">
         <div className="flex flex-wrap gap-5 xl:gap-20">
           <Link
             to="#"
@@ -99,7 +95,7 @@ const InvestmentsTable = () => {
             Pay daily
           </Link>
         </div>
-      </div>
+      </div> */}
       <div className="flex flex-col gap-10">
         <InvestmentTable data={listInvestment} />
       </div>
