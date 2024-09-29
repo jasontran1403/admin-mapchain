@@ -187,7 +187,6 @@ const TransferTable = () => {
               value={formData.type}
               onChange={handleInputChange}
             >
-              <option value="1">USDTBEP20</option>
               <option value="2">MCT</option>
             </select>
           </div>

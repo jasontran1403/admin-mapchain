@@ -25,6 +25,7 @@ import WithdrawTable from './pages/WithdrawTable';
 import TransferTable from './pages/TransferTable';
 import SwapTable from './pages/SwapTable';
 import DirectCommission from './pages/DirectCommission';
+import FaSettings from "./pages/FaSettings";
 import BinaryCommission from './pages/BinaryCommission';
 import LeaderCommission from './pages/LeaderCommission';
 import PopCommission from './pages/PopCommission';
@@ -197,6 +198,15 @@ function App() {
             <>
               <PageTitle title="List investments" />
               <InvestmentsTable />
+            </>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <>
+              <PageTitle title="2FA Settings" />
+              <FaSettings />
             </>
           }
         />
