@@ -10,6 +10,8 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
 
 const PendingWithdraw = () => {
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+
   const [accessToken, setAccessToken] = useState('');
   const [pendingWithdraw, setPendingWithdraw] = useState([]);
 
@@ -22,7 +24,6 @@ const PendingWithdraw = () => {
     }
   }, []);
 
-  console.log(accessToken);
 
   useEffect(() => {
     let config = {
@@ -46,46 +47,68 @@ const PendingWithdraw = () => {
   const handleApproveAll = () => {};
 
   const handleApprove = (code: string) => {
+    if (buttonDisabled) return;
     if (code === null || code === '') {
       return;
     }
 
-    let config = {
-      method: 'get',
-      url: `${URL}admin/approve/${code}`,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'ngrok-skip-browser-warning': '69420',
+    Swal.fire({
+      title: 'Confirm withdraw',
+      text: `Are you sure you want to approve`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, transfer it!',
+      cancelButtonText: 'No, cancel',
+      reverseButtons: true,
+      customClass: {
+        confirmButton: 'custom-confirm-button', // Custom class for confirm button
+        cancelButton: 'custom-cancel-button',   // Custom class for cancel button
       },
-    };
+      buttonsStyling: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setButtonDisabled(true);
+        let config = {
+          method: 'get',
+          url: `${URL}admin/approve/${code}`,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'ngrok-skip-browser-warning': '69420',
+          },
+        };
+    
+        Axios.request(config)
+          .then((response) => {
+            if (response.data === "ok") {
+              setButtonDisabled(true);
 
-    Axios.request(config)
-      .then((response) => {
-        if (response.data === "ok") {
-          // toast.success('Withdraw order approve success!', {
-          //   position: 'top-right',
-          //   autoClose: 3000,
-          //   onClick: () => window.location.reload(),
-          // });
-          Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: 'Withdraw order approve success',
-            showConfirmButton: false,
-            timer: 2000,
-          }).then(() => {
-            window.location.reload();
+              Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Withdraw order approve success',
+                showConfirmButton: false,
+                timer: 2000,
+              }).then(() => {
+                window.location.reload();
+              });
+            } else {
+              setButtonDisabled(false);
+
+              toast.error(response.data, {
+                position: 'top-right',
+                autoClose: 1500
+              });
+            }
+          })
+          .catch((error) => {
+            setButtonDisabled(false);
+
+            console.log(error);
           });
-        } else {
-          toast.error(response.data, {
-            position: 'top-right',
-            autoClose: 1500
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      }
+    });
+
+    
   };
 
   return (

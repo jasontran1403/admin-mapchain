@@ -5,11 +5,13 @@ import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import PendingDepositTable from '../components/Tables/PendingDepositTable';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { URL } from "../types/constant";
+import { URL } from '../types/constant';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
 
 const PendingDeposit = () => {
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+
   const [accessToken, setAccessToken] = useState('');
   const [listUnCollect, setListUnCollect] = useState([]);
 
@@ -21,8 +23,6 @@ const PendingDeposit = () => {
       setAccessToken(token); // Here, token is guaranteed to be a string.
     }
   }, []);
-
-  console.log(accessToken);
 
   useEffect(() => {
     let config = {
@@ -48,55 +48,71 @@ const PendingDeposit = () => {
   const handleCollectAll = () => {};
 
   const handleCollectWallet = (walletAddress: string) => {
+    if (buttonDisabled) return;
     if (walletAddress === null || walletAddress === '') {
       return;
     }
 
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: `${URL}admin/pending-deposit/${walletAddress}`,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization:
-          `Bearer ${accessToken}`,
-          "ngrok-skip-browser-warning": "69420",
-      }
-    };
+    Swal.fire({
+      title: 'Confirm collect wallet',
+      text: `Are you sure you want to collect`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, transfer it!',
+      cancelButtonText: 'No, cancel',
+      reverseButtons: true,
+      customClass: {
+        confirmButton: 'custom-confirm-button', // Custom class for confirm button
+        cancelButton: 'custom-cancel-button', // Custom class for cancel button
+      },
+      buttonsStyling: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setButtonDisabled(true);
+        let config = {
+          method: 'get',
+          maxBodyLength: Infinity,
+          url: `${URL}admin/pending-deposit/${walletAddress}`,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+            'ngrok-skip-browser-warning': '69420',
+          },
+        };
 
-    Axios
-      .request(config)
-      .then((response) => {
-        if (response.data === "ok") {
-          // toast.success("Collect amount success", {
-          //   position: 'top-right',
-          //   autoClose: 3000,
-          //   onClick: () => {
-          //     window.location.reload();
-          //   },
-          // });
-          Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: 'Collect amount success',
-            showConfirmButton: false,
-            timer: 2000,
-          }).then(() => {
-            window.location.reload();
+        Axios.request(config)
+          .then((response) => {
+            if (response.data === 'ok') {
+              setButtonDisabled(true);
+
+              Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Collect amount success',
+                showConfirmButton: false,
+                timer: 2000,
+              }).then(() => {
+                window.location.reload();
+              });
+            } else {
+              setButtonDisabled(false);
+
+              toast.error(response.data, {
+                position: 'top-right',
+                autoClose: 3000,
+              });
+            }
+          })
+          .catch((error) => {
+            setButtonDisabled(false);
+
+            toast.error('Failed when collect', {
+              position: 'top-right',
+              autoClose: 3000,
+            });
           });
-        } else {
-          toast.error(response.data, {
-            position: 'top-right',
-            autoClose: 3000
-          });
-        }
-      })
-      .catch((error) => {
-        toast.error("Failed when collect", {
-          position: 'top-right',
-          autoClose: 3000
-        });
-      });
+      }
+    });
   };
 
   return (
@@ -119,7 +135,6 @@ const PendingDeposit = () => {
           handleCollect={handleCollectWallet}
         />
       </div>
-      <ToastContainer />
     </>
   );
 };

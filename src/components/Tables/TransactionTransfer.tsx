@@ -96,6 +96,9 @@ const TransactionTransfer: React.FC<TransactionTransferProps> = ({ data }) => {
                 To
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                Type
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 Status
               </th>
             </tr>
@@ -130,6 +133,19 @@ const TransactionTransfer: React.FC<TransactionTransferProps> = ({ data }) => {
                   <h5 className="font-medium text-black dark:text-white">
                     {formatWalletAddress(packageItem.toWallet)}
                   </h5>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p
+                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
+                      packageItem.method === 0
+                        ? 'bg-danger text-danger'
+                        : 'bg-success text-success'
+                    }`}
+                  >
+                    {packageItem.method === 0
+                      ? 'Out'
+                      : 'In'}
+                  </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p

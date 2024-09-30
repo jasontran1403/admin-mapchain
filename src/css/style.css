@@ -11,6 +11,35 @@
 @layer components {
 }
 
+.custom-confirm-button {
+  background-color: lightblue;  /* Light blue background */
+  color: white;                 /* White text */
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.custom-cancel-button {
+  background-color: orangered;  /* Orangered background */
+  color: white;                 /* White text */
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.custom-confirm-button:hover {
+  background-color: #87ceeb;    /* Darker blue on hover */
+}
+
+.custom-cancel-button:hover {
+  background-color: #ff4500;    /* Darker orangered on hover */
+}
+
+
 @layer utilities {
   /* Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
@@ -22,6 +51,7 @@
     scrollbar-width: none; /* Firefox */
   }
 
+  
   .chat-height {
     @apply h-[calc(100vh_-_8.125rem)] lg:h-[calc(100vh_-_5.625rem)];
   }

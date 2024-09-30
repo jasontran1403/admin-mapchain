@@ -16,8 +16,10 @@ const TransferTable = () => {
     amount: 0,
     type: '1', // Default to USDTBEP20
   });
+  const [buttonDisabled, setButtonDisabled] = useState(false);
 
   useEffect(() => {
+ 
     const token = localStorage.getItem('access_token');
     if (token === null || token === '') {
       window.location.href = '/auth/signin';
@@ -46,24 +48,20 @@ const TransferTable = () => {
   }, [accessToken]);
 
   const handleInputChange = (e: any) => {
+    if (buttonDisabled) return;
     const { name, value } = e.target;
 
-    // Check if the field being changed is 'amount'
     if (name === 'amount') {
-      // Convert value to a number
       const numericValue = Number(value);
-
-      // If not a number or less than 0, reset amount
       if (isNaN(numericValue) || numericValue < 0) {
         setFormData((prevData) => ({
           ...prevData,
           amount: '',
         }));
-        return; // Exit early
+        return;
       }
     }
 
-    // Update form data for other fields
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -74,60 +72,81 @@ const TransferTable = () => {
     const { walletAddress, amount, type } = formData;
 
     if (!walletAddress || amount <= 0 || !type) {
-      alert(
-        'Please fill in all fields and ensure amount is greater than zero.',
-      );
+      alert('Please fill in all fields and ensure amount is greater than zero.');
       return;
     }
 
-    let data = JSON.stringify({
-      toWalletAddress: formData.walletAddress,
-      amount: formData.amount,
-      type: formData.type,
-    });
-
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: `${URL}admin/admin-transfer`,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-        'ngrok-skip-browser-warning': '69420',
+    // Show SweetAlert2 confirmation modal
+    Swal.fire({
+      title: 'Confirm Transfer',
+      text: `Are you sure you want to transfer ${amount} to ${walletAddress}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, transfer it!',
+      cancelButtonText: 'No, cancel',
+      reverseButtons: true,
+      customClass: {
+        confirmButton: 'custom-confirm-button', // Custom class for confirm button
+        cancelButton: 'custom-cancel-button',   // Custom class for cancel button
       },
-      data: data,
-    };
+      buttonsStyling: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Disable the transfer button
+        setButtonDisabled(true);
 
-    Axios
-      .request(config)
-      .then((response) => {
-        if (response.data === "Transfer success") {
-          // toast.success(response.data, {
-          //   position: 'top-right',
-          //   autoClose: 3000,
-          //   onClick: () => {
-          //     window.location.reload();
-          //   },
-          // });
-          Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: response.data,
-            showConfirmButton: false,
-            timer: 2000,
-          }).then(() => {
-            window.location.reload();
+        let data = JSON.stringify({
+          toWalletAddress: formData.walletAddress,
+          amount: formData.amount,
+          type: formData.type,
+        });
+
+        let config = {
+          method: 'post',
+          maxBodyLength: Infinity,
+          url: `${URL}admin/admin-transfer`,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+            'ngrok-skip-browser-warning': '69420',
+          },
+          data: data,
+        };
+
+        Axios.request(config)
+          .then((response) => {
+            setButtonDisabled(true);
+            if (response.data === "Transfer success") {
+              Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: response.data,
+                showConfirmButton: false,
+                timer: 2000,
+              }).then(() => {
+                window.location.reload();
+              });
+            } else {
+              setButtonDisabled(false);
+              toast.error(response.data, {
+                position: 'top-right',
+                autoClose: 3000,
+              });
+              // Re-enable the button if the transfer fails
+              
+            }
+          })
+          .catch((error) => {
+            // console.log(error);
+            toast.error('An error occurred. Please try again.', {
+              position: 'top-right',
+              autoClose: 3000,
+            });
+            // Re-enable the button if there is an error
+            setButtonDisabled(false);
           });
-        } else {
-          toast.error(response.data, {
-            position: 'top-right',
-            autoClose: 3000,
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      }
+    });
   };
 
   return (
@@ -205,7 +224,6 @@ const TransferTable = () => {
       <div className="flex flex-col gap-10">
         <TransactionTransfer data={listTransfer} />
       </div>
-      <ToastContainer />
     </>
   );
 };
