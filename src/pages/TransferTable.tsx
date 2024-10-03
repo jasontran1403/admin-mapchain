@@ -10,6 +10,7 @@ import { URL } from "../types/constant";
 
 const TransferTable = () => {
   const [accessToken, setAccessToken] = useState('');
+  const [adminWallet, setAdminWallet] = useState("");
   const [listTransfer, setListTransfer] = useState([]);
   const [formData, setFormData] = useState({
     walletAddress: '',
@@ -19,12 +20,13 @@ const TransferTable = () => {
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   useEffect(() => {
- 
     const token = localStorage.getItem('access_token');
-    if (token === null || token === '') {
+    const wallet = localStorage.getItem('wallet_address');
+    if (token === null || token === '' || wallet === null || wallet === '') {
       window.location.href = '/auth/signin';
     } else {
       setAccessToken(token);
+      setAdminWallet(wallet);
     }
   }, []);
 
@@ -96,6 +98,7 @@ const TransferTable = () => {
         setButtonDisabled(true);
 
         let data = JSON.stringify({
+          from: adminWallet,
           toWalletAddress: formData.walletAddress,
           amount: formData.amount,
           type: formData.type,

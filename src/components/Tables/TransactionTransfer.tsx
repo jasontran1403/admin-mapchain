@@ -143,8 +143,8 @@ const TransactionTransfer: React.FC<TransactionTransferProps> = ({ data }) => {
                     }`}
                   >
                     {packageItem.method === 0
-                      ? 'Out'
-                      : 'In'}
+                      ? 'In'
+                      : 'Out'}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
