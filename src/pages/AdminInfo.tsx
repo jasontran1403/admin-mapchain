@@ -126,7 +126,7 @@ const AdminInfo = () => {
                         className="mb-3 block text-sm font-medium text-black dark:text-white"
                         htmlFor="walletAddress"
                       >
-                        BSC Wallet
+                        BSC Wallet PrivateKey
                       </label>
                       <div className="relative">
                         <input
