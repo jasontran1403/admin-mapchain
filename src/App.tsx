@@ -31,6 +31,8 @@ import LeaderCommission from './pages/LeaderCommission';
 import PopCommission from './pages/PopCommission';
 import DailyReward from './pages/DailyReward';
 import AdminInfo from './pages/AdminInfo';
+import PendingDepositMCT from './pages/PendingDepositMCT';
+import PendingWithdrawMCT from './pages/PendingWithdrawMCT';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -153,6 +155,24 @@ function App() {
             <>
               <PageTitle title="Pending Deposit" />
               <PendingDeposit />
+            </>
+          }
+        />
+        <Route
+          path="/pending-deposit-mct"
+          element={
+            <>
+              <PageTitle title="Pending Deposit MCT" />
+              <PendingDepositMCT />
+            </>
+          }
+        />
+        <Route
+          path="/pending-withdraw-mct"
+          element={
+            <>
+              <PageTitle title="Pending Withdraw MCT" />
+              <PendingWithdrawMCT />
             </>
           }
         />

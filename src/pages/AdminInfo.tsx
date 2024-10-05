@@ -10,6 +10,8 @@ import 'sweetalert2/src/sweetalert2.scss';
 const AdminInfo = () => {
   const [accessToken, setAccessToken] = useState('');
   const [bscPrivateKey, setBscPrivateKey] = useState('');
+  const [mnemonics, setMnemonics] = useState('');
+  const [tonWallet, setTonWallet] = useState('');
   const [mctPrice, setMctPrice] = useState(0);
   const [bnbBalance, setBnbBalance] = useState(0);
   const [usdtBalance, setUsdtBalance] = useState(0);
@@ -41,6 +43,8 @@ const AdminInfo = () => {
         setMctPrice(response.data.price);
         setBnbBalance(response.data.bnbBalance)
         setUsdtBalance(response.data.usdtBalance);
+        setTonWallet(response.data.tonWallet);
+        setMnemonics(response.data.mnemonics);
         setWalletAddress(response.data.walletAddress);
       })
       .catch((error) => {
@@ -56,6 +60,8 @@ const AdminInfo = () => {
     let data = JSON.stringify({
       privateKey: bscPrivateKey,
       walletAddress: walletAddress,
+      mnemonics: mnemonics,
+      tonWallet: tonWallet,
       price: mctPrice,
     });
 
@@ -126,6 +132,48 @@ const AdminInfo = () => {
                         className="mb-3 block text-sm font-medium text-black dark:text-white"
                         htmlFor="walletAddress"
                       >
+                        Ton Mnemonics
+                      </label>
+                      <div className="relative">
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="text"
+                          name="walletAddress"
+                          id="walletAddress"
+                          value={mnemonics}
+                          onChange={(e) => {
+                            setMnemonics(e.target.value);
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="w-full sm:w-1/2">
+                      <label
+                        className="mb-3 block text-sm font-medium text-black dark:text-white"
+                        htmlFor="displayName"
+                      >
+                        Ton wallet address
+                      </label>
+                      <input
+                        className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                        type="text"
+                        name="displayName"
+                        id="displayName"
+                        value={tonWallet}
+                        onChange={(e) => {
+                          setTonWallet(e.target.value);
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                    <div className="w-full sm:w-1/2">
+                      <label
+                        className="mb-3 block text-sm font-medium text-black dark:text-white"
+                        htmlFor="walletAddress"
+                      >
                         BSC Wallet PrivateKey
                       </label>
                       <div className="relative">
@@ -147,7 +195,7 @@ const AdminInfo = () => {
                         className="mb-3 block text-sm font-medium text-black dark:text-white"
                         htmlFor="displayName"
                       >
-                        Wallet address
+                        Wallet address BSC
                       </label>
                       <input
                         className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
