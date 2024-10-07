@@ -47,6 +47,7 @@ const PendingWithdraw = () => {
   const handleApproveAll = () => {};
 
   const handleApprove = (code: string) => {
+    return;
     if (buttonDisabled) return;
     if (code === null || code === '') {
       return;
