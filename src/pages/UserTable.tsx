@@ -56,7 +56,6 @@ const UserTable = () => {
     Axios.request(config)
     .then((response) => {
       setUsers(response.data);
-      console.log(response.data);
       setLoading(false); // End loading on success
     })
     .catch((error) => {

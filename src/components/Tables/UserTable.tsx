@@ -145,7 +145,7 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
         console.error('Failed to copy: ', err);
       });
   };
-
+  
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <input
@@ -230,6 +230,27 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
+                    <a
+                      className="hover:text-primary"
+                      href={`https://www.mapchain.org/admin/dashboard/${user.walletAddress}`}
+                      target="_blank"
+                    >
+                      {/* Login Icon */}
+                      <svg
+                        className="fill-current"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M15 8.5V10h-4v4h4v1.5c0 .83-.67 1.5-1.5 1.5h-7c-.83 0-1.5-.67-1.5-1.5v-1.5H4v-4h2V8.5c0-.83.67-1.5 1.5-1.5h7c.83 0 1.5.67 1.5 1.5zM21 12c0 4.41-3.59 8-8 8s-8-3.59-8-8h2c0 3.31 2.69 6 6 6s6-2.69 6-6h2z"
+                          fill=""
+                        />
+                      </svg>
+                    </a>
+
                     {/* Eye Icon */}
                     <button
                       className="hover:text-primary"

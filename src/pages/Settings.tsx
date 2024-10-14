@@ -8,6 +8,7 @@ import { URL } from '../types/constant';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
 
+
 const Settings = () => {
   const [accessToken, setAccessToken] = useState('');
   const { id } = useParams();
@@ -30,15 +31,15 @@ const Settings = () => {
         'ngrok-skip-browser-warning': '69420',
       },
     };
-  
+
     Axios.request(config)
       .then(() => {
         localStorage.removeItem('access_token'); // Clear access token
-        window.location.href = '/auth/signin';   // Redirect to signin on success
+        window.location.href = '/auth/signin'; // Redirect to signin on success
       })
       .catch(() => {
         localStorage.removeItem('access_token'); // Clear access token on error as well
-        window.location.href = '/auth/signin';   // Redirect to signin on error
+        window.location.href = '/auth/signin'; // Redirect to signin on error
       });
   };
 
@@ -199,17 +200,23 @@ const Settings = () => {
                         User rank
                       </label>
                       <div className="relative">
-                        <input
-                          className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                          type="number"
+                        <select
                           name="userRank"
                           id="userRank"
                           value={userDetail.userRank} // Controlled input for userRank
                           onChange={handleInputChange} // Handles changes in input
-                          min="-1" // Set minimum value to -1
-                          max="8" // Set maximum value to 8
-                          step="1" // Step by 1 each time (ensures one value change per click)
-                        />
+                          className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                        >
+                          {/* Generate options from -1 to 8 */}
+                          {[...Array(10)].map((_, index) => {
+                            const value = index - 1; // -1 to 8
+                            return (
+                              <option key={value} value={value}>
+                                VIP {value}
+                              </option>
+                            );
+                          })}
+                        </select>
                       </div>
                     </div>
 
@@ -220,16 +227,22 @@ const Settings = () => {
                       >
                         Direct rank
                       </label>
-                      <input
-                        className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                        type="number"
-                        name="directRank"
-                        id="directRank"
-                        value={userDetail.directRank || 0}
-                        onChange={handleInputChange} // Handle change
-                        min="0"
-                        max="6"
-                      />
+                      <div className="relative">
+                        <select
+                          name="directRank"
+                          id="directRank"
+                          value={userDetail.directRank || 0} // Controlled input for directRank
+                          onChange={handleInputChange} // Handle change
+                          className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                        >
+                          {/* Generate options from 0 to 6 */}
+                          {[...Array(7)].map((_, index) => (
+                            <option key={index} value={index}>
+                              Direct {index}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   </div>
 
@@ -242,16 +255,20 @@ const Settings = () => {
                         Binary rank
                       </label>
                       <div className="relative">
-                        <input
-                          className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                          type="number"
+                        <select
                           name="binaryRank"
                           id="binaryRank"
-                          value={userDetail.binaryRank || 0}
+                          value={userDetail.binaryRank || 0} // Controlled input for binaryRank
                           onChange={handleInputChange} // Handle change
-                          min="0"
-                          max="4"
-                        />
+                          className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                        >
+                          {/* Generate options from 0 to 4 */}
+                          {[...Array(5)].map((_, index) => (
+                            <option key={index} value={index}>
+                              Binary {index}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </div>
 
