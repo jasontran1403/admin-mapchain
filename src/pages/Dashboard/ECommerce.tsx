@@ -28,7 +28,7 @@ const ECommerce: React.FC = () => {
     setLoading(true);
     let config = {
       method: 'get',
-      url: 'https://ghoul-helpful-salmon.ngrok-free.app/api/v1/admin/statistic',
+      url: `${URL}admin/statistic`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'ngrok-skip-browser-warning': '69420',
@@ -41,10 +41,9 @@ const ECommerce: React.FC = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
         setLoading(false);
       });
-  }, []);
+  }, [accessToken]);
 
   const formatUSDT = (amount: number) => {
     return `${Intl.NumberFormat().format(amount)} USDT`; // Format with thousands separator and 2 decimal places
