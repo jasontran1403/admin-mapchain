@@ -302,7 +302,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 (isActive && '!text-white')
                               }
                             >
-                              Deposit
+                              Uncollect Deposit USDT
                             </NavLink>
                           </li>
                           <li>
@@ -313,7 +313,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 (isActive && '!text-white')
                               }
                             >
-                              Withdraw
+                              Pending Withdraw USDT
                             </NavLink>
                           </li>
                           <li>
@@ -324,7 +324,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 (isActive && '!text-white')
                               }
                             >
-                              Deposit MCT
+                              Uncollect Deposit MCT
                             </NavLink>
                           </li>
                           <li>
@@ -335,7 +335,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 (isActive && '!text-white')
                               }
                             >
-                              Withdraw MCT
+                              Pending Withdraw MCT
                             </NavLink>
                           </li>
                         </ul>

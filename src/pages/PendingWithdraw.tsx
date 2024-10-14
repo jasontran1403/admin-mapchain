@@ -24,6 +24,25 @@ const PendingWithdraw = () => {
     }
   }, []);
 
+  const logout = () => {
+    let config = {
+      method: 'get',
+      url: `${URL}auth/logout/${accessToken}`, // Adjusted URL
+      headers: {
+        'ngrok-skip-browser-warning': '69420',
+      },
+    };
+  
+    Axios.request(config)
+      .then(() => {
+        localStorage.removeItem('access_token'); // Clear access token
+        window.location.href = '/auth/signin';   // Redirect to signin on success
+      })
+      .catch(() => {
+        localStorage.removeItem('access_token'); // Clear access token on error as well
+        window.location.href = '/auth/signin';   // Redirect to signin on error
+      });
+  };
 
   useEffect(() => {
     let config = {
@@ -40,7 +59,6 @@ const PendingWithdraw = () => {
         setPendingWithdraw(response.data);
       })
       .catch((error) => {
-        console.log(error);
       });
   }, [accessToken]);
 

@@ -6,12 +6,14 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
-import { URL } from "../types/constant";
+import { URL } from '../types/constant';
+import Loader from '../common/Loader';
 
 const TransferTable = () => {
   const [accessToken, setAccessToken] = useState('');
-  const [adminWallet, setAdminWallet] = useState("");
+  const [adminWallet, setAdminWallet] = useState('');
   const [listTransfer, setListTransfer] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
   const [formData, setFormData] = useState({
     walletAddress: '',
     amount: 0,
@@ -30,7 +32,28 @@ const TransferTable = () => {
     }
   }, []);
 
+  const logout = () => {
+    let config = {
+      method: 'get',
+      url: `${URL}auth/logout/${accessToken}`, // Adjusted URL
+      headers: {
+        'ngrok-skip-browser-warning': '69420',
+      },
+    };
+
+    Axios.request(config)
+      .then(() => {
+        localStorage.removeItem('access_token'); // Clear access token
+        window.location.href = '/auth/signin'; // Redirect to signin on success
+      })
+      .catch(() => {
+        localStorage.removeItem('access_token'); // Clear access token on error as well
+        window.location.href = '/auth/signin'; // Redirect to signin on error
+      });
+  };
+
   useEffect(() => {
+    setLoading(true);
     let config = {
       method: 'get',
       url: `${URL}admin/transfer`,
@@ -43,9 +66,10 @@ const TransferTable = () => {
     Axios.request(config)
       .then((response) => {
         setListTransfer(response.data);
+        setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        setLoading(false);
       });
   }, [accessToken]);
 
@@ -74,7 +98,9 @@ const TransferTable = () => {
     const { walletAddress, amount, type } = formData;
 
     if (!walletAddress || amount <= 0 || !type) {
-      alert('Please fill in all fields and ensure amount is greater than zero.');
+      alert(
+        'Please fill in all fields and ensure amount is greater than zero.',
+      );
       return;
     }
 
@@ -89,7 +115,7 @@ const TransferTable = () => {
       reverseButtons: true,
       customClass: {
         confirmButton: 'custom-confirm-button', // Custom class for confirm button
-        cancelButton: 'custom-cancel-button',   // Custom class for cancel button
+        cancelButton: 'custom-cancel-button', // Custom class for cancel button
       },
       buttonsStyling: false,
     }).then((result) => {
@@ -119,7 +145,7 @@ const TransferTable = () => {
         Axios.request(config)
           .then((response) => {
             setButtonDisabled(true);
-            if (response.data === "Transfer success") {
+            if (response.data === 'Transfer success') {
               Swal.fire({
                 position: 'top-end',
                 icon: 'success',
@@ -136,7 +162,6 @@ const TransferTable = () => {
                 autoClose: 3000,
               });
               // Re-enable the button if the transfer fails
-              
             }
           })
           .catch((error) => {
@@ -172,7 +197,7 @@ const TransferTable = () => {
                 id="walletAddress"
                 value={formData.walletAddress}
                 onChange={handleInputChange}
-                placeholder='Transfer to wallet address'
+                placeholder="Transfer to wallet address"
               />
             </div>
           </div>
@@ -225,7 +250,7 @@ const TransferTable = () => {
       </div>
 
       <div className="flex flex-col gap-10">
-        <TransactionTransfer data={listTransfer} />
+        {loading ? <Loader /> : <TransactionTransfer data={listTransfer} />}
       </div>
     </>
   );

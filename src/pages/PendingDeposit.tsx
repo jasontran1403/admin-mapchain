@@ -8,12 +8,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import { URL } from '../types/constant';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
+import Loader from '../common/Loader';
 
 const PendingDeposit = () => {
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const [accessToken, setAccessToken] = useState('');
   const [listUnCollect, setListUnCollect] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -24,7 +26,28 @@ const PendingDeposit = () => {
     }
   }, []);
 
+  const logout = () => {
+    let config = {
+      method: 'get',
+      url: `${URL}auth/logout/${accessToken}`, // Adjusted URL
+      headers: {
+        'ngrok-skip-browser-warning': '69420',
+      },
+    };
+  
+    Axios.request(config)
+      .then(() => {
+        localStorage.removeItem('access_token'); // Clear access token
+        window.location.href = '/auth/signin';   // Redirect to signin on success
+      })
+      .catch(() => {
+        localStorage.removeItem('access_token'); // Clear access token on error as well
+        window.location.href = '/auth/signin';   // Redirect to signin on error
+      });
+  };
+  
   useEffect(() => {
+    setLoading(true);
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
@@ -41,8 +64,9 @@ const PendingDeposit = () => {
         setListUnCollect(response.data);
       })
       .catch((error) => {
-        console.log(error);
       });
+
+    setLoading(false);
   }, [accessToken]);
 
   const handleCollectAll = () => {};
@@ -130,10 +154,14 @@ const PendingDeposit = () => {
         </div>
       </div>
       <div className="flex flex-col gap-10">
-        <PendingDepositTable
-          data={listUnCollect}
-          handleCollect={handleCollectWallet}
-        />
+        {loading ? (
+          <Loader />
+        ) : (
+          <PendingDepositTable
+            data={listUnCollect}
+            handleCollect={handleCollectWallet}
+          />
+        )}
       </div>
     </>
   );

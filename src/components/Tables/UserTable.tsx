@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { URL } from "../../types/constant";
+import { URL } from '../../types/constant';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
 
@@ -20,6 +20,7 @@ type User = {
   leaderRank: number;
   maxOut: number;
   lock: boolean;
+  lockTransaction: boolean;
 };
 
 interface UserTableProps {
@@ -32,13 +33,13 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-  const handleUserPage = (userWallet) => {
+  const handleUserPage = (userWallet: string) => {
     if (userWallet === null || userWallet === '') {
       return;
     }
 
     window.location.href = `/user/${userWallet}`;
-  }
+  };
 
   // Filter users based on search term
   const filteredUsers = data.filter(
@@ -58,7 +59,7 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
     setCurrentPage(pageNumber);
   };
 
-  const handleToggle = (userWalletAddress:string) => {
+  const handleToggle = (userWalletAddress: string) => {
     if (userWalletAddress === null || userWalletAddress === '') {
       return;
     }
@@ -74,14 +75,6 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
 
     Axios.request(config)
       .then((response) => {
-        console.log(response.data);
-        // toast.success('Toggle status success!', {
-        //   position: 'top-right',
-        //   autoClose: 1500,
-        //   onClick: () => {
-        //     window.location.reload(); 
-        //   },
-        // });
         Swal.fire({
           position: 'top-end',
           icon: 'success',
@@ -89,7 +82,7 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
           showConfirmButton: false,
           timer: 2000,
         }).then(() => {
-          window.location.reload(); 
+          window.location.reload();
         });
       })
       .catch((error) => {
@@ -97,6 +90,59 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
           position: 'top-right',
           autoClose: 1500,
         });
+      });
+  };
+
+  const truncateAddress = (address: string) => {
+    if (!address) return '';
+    return `${address.slice(0, 6)}...${address.slice(-6)}`;
+  };
+
+  const handleToggleTransaction = (userWalletAddress: string) => {
+    if (userWalletAddress === null || userWalletAddress === '') {
+      return;
+    }
+
+    let config = {
+      method: 'get',
+      url: `${URL}admin/lock-transaction/${userWalletAddress}`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'ngrok-skip-browser-warning': '69420',
+      },
+    };
+
+    Axios.request(config)
+      .then(() => {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Toggle transaction status success',
+          showConfirmButton: false,
+          timer: 2000,
+        }).then(() => {
+          window.location.reload();
+        });
+      })
+      .catch((error) => {
+        toast.error(error, {
+          position: 'top-right',
+          autoClose: 1500,
+        });
+      });
+  };
+
+  const copyToClipboard = (wallet: string) => {
+    navigator.clipboard
+      .writeText(wallet)
+      .then(() => {
+        toast.success('Wallet address copied to clipboard', {
+          position: 'top-right',
+          autoClose: 1500,
+        });
+      })
+      .catch((err) => {
+        console.error('Failed to copy: ', err);
       });
   };
 
@@ -128,6 +174,9 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 Status
               </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                Transaction
+              </th>
               <th className="py-4 px-4 font-medium text-black dark:text-white">
                 Actions
               </th>
@@ -137,8 +186,13 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
             {currentUsers.map((user, idx) => (
               <tr key={idx}>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {user.walletAddress}
+                  <p
+                    className="text-black dark:text-white"
+                    onClick={() => {
+                      copyToClipboard(user.walletAddress);
+                    }}
+                  >
+                    {truncateAddress(user.walletAddress)}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -164,10 +218,23 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p
+                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
+                      user.lockTransaction === false
+                        ? 'bg-success text-success'
+                        : 'bg-danger text-danger'
+                    }`}
+                  >
+                    {user.lockTransaction === false ? 'Unlocked' : 'Locked'}
+                  </p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
                     {/* Eye Icon */}
-                    <button className="hover:text-primary"
-                    onClick={() => handleUserPage(user.walletAddress)}>
+                    <button
+                      className="hover:text-primary"
+                      onClick={() => handleUserPage(user.walletAddress)}
+                    >
                       <svg
                         className="fill-current"
                         width="18"
@@ -187,9 +254,10 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
                     <button
                       className="hover:text-primary"
                       onClick={() => {
-                        handleToggle(user.walletAddress);
+                        handleToggleTransaction(user.walletAddress);
                       }}
                     >
+                      {/* Transaction Lock Icon */}
                       <svg
                         className="fill-current"
                         width="18"
@@ -199,7 +267,30 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="M17 8h-1V6c0-2.21-1.79-4-4-4S8 3.79 8 6v2H7c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-5 14H9v-2h3v2zm-3-8V6c0-1.1.9-2 2-2s2 .9 2 2v2h-4z"
+                          d="M12 2C8.69 2 6 4.69 6 8v4H4v8h16v-8h-2V8c0-3.31-2.69-6-6-6zm4 10v6H8v-6h8zm-4-8c2.21 0 4 1.79 4 4v4H8V8c0-2.21 1.79-4 4-4z"
+                          fill=""
+                        />
+                      </svg>
+                    </button>
+
+                    {/* Lock Icon */}
+                    <button
+                      className="hover:text-primary"
+                      onClick={() => {
+                        handleToggle(user.walletAddress);
+                      }}
+                    >
+                      {/* Account Lock Icon */}
+                      <svg
+                        className="fill-current"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 1a6 6 0 00-6 6v5H5a3 3 0 00-3 3v5a3 3 0 003 3h14a3 3 0 003-3v-5a3 3 0 00-3-3h-1V7a6 6 0 00-6-6zm3 11H9V7a3 3 0 116 0v5z"
                           fill=""
                         />
                       </svg>

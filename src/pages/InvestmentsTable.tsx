@@ -8,11 +8,14 @@ import InvestmentTable from '../components/Tables/InvestmentTable';
 import { URL } from '../types/constant';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
+import Loader from '../common/Loader'; // Importing Loader component
 
 const InvestmentsTable = () => {
   const [accessToken, setAccessToken] = useState('');
   const [listInvestment, setListInvestment] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
+  // Fetch access token from local storage
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (token === null || token === '') {
@@ -22,7 +25,29 @@ const InvestmentsTable = () => {
     }
   }, []);
 
+  const logout = () => {
+    let config = {
+      method: 'get',
+      url: `${URL}auth/logout/${accessToken}`, // Adjusted URL
+      headers: {
+        'ngrok-skip-browser-warning': '69420',
+      },
+    };
+  
+    Axios.request(config)
+      .then(() => {
+        localStorage.removeItem('access_token'); // Clear access token
+        window.location.href = '/auth/signin';   // Redirect to signin on success
+      })
+      .catch(() => {
+        localStorage.removeItem('access_token'); // Clear access token on error as well
+        window.location.href = '/auth/signin';   // Redirect to signin on error
+      });
+  };
+
+  // Fetch investments list
   useEffect(() => {
+    setLoading(true); // Start loading
     let config = {
       method: 'get',
       url: `${URL}admin/investments`,
@@ -34,13 +59,16 @@ const InvestmentsTable = () => {
 
     Axios.request(config)
       .then((response) => {
-        setListInvestment(response.data);
+        setListInvestment(response.data); // Set fetched data
+        setLoading(false); // Stop loading when data is received
       })
       .catch((error) => {
+        setLoading(false); // Stop loading on error
         console.log(error);
       });
   }, [accessToken]);
 
+  // Handle pay daily reward action
   const handlePayDaily = () => {
     let config = {
       method: 'get',
@@ -53,15 +81,7 @@ const InvestmentsTable = () => {
 
     Axios.request(config)
       .then((response) => {
-        console.log(response.data);
         if (response.data === 'ok') {
-          // toast.success('Daily reward pay success!', {
-          //   position: 'top-right',
-          //   autoClose: 3000,
-          //   onClick: () => {
-          //     window.location.reload();
-          //   },
-          // });
           Swal.fire({
             position: 'top-end',
             icon: 'success',
@@ -75,7 +95,7 @@ const InvestmentsTable = () => {
       })
       .catch((error) => {
         console.log(error);
-        toast.error(error, {
+        toast.error('Failed to process daily reward', {
           position: 'top-right',
           autoClose: 1500,
         });
@@ -85,19 +105,14 @@ const InvestmentsTable = () => {
   return (
     <>
       <Breadcrumb pageName="Investments table" />
-      {/* <div className="p-4 md:p-6 xl:p-9">
-        <div className="flex flex-wrap gap-5 xl:gap-20">
-          <Link
-            to="#"
-            onClick={handlePayDaily}
-            className="inline-flex items-center justify-center rounded-md border border-primary py-4 px-10 text-center font-medium text-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
-          >
-            Pay daily
-          </Link>
-        </div>
-      </div> */}
+
       <div className="flex flex-col gap-10">
-        <InvestmentTable data={listInvestment} />
+        {/* Show Loader while loading is true, otherwise show InvestmentTable */}
+        {loading ? (
+          <Loader /> // Loader is displayed during data fetching
+        ) : (
+          <InvestmentTable data={listInvestment} />
+        )}
       </div>
       <ToastContainer />
     </>

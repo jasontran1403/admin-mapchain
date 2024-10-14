@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { URL } from "../types/constant";
+import { URL } from '../types/constant';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
 
@@ -21,6 +21,26 @@ const Settings = () => {
       setAccessToken(token);
     }
   }, []);
+
+  const logout = () => {
+    let config = {
+      method: 'get',
+      url: `${URL}auth/logout/${accessToken}`, // Adjusted URL
+      headers: {
+        'ngrok-skip-browser-warning': '69420',
+      },
+    };
+  
+    Axios.request(config)
+      .then(() => {
+        localStorage.removeItem('access_token'); // Clear access token
+        window.location.href = '/auth/signin';   // Redirect to signin on success
+      })
+      .catch(() => {
+        localStorage.removeItem('access_token'); // Clear access token on error as well
+        window.location.href = '/auth/signin';   // Redirect to signin on error
+      });
+  };
 
   useEffect(() => {
     let config = {
@@ -39,7 +59,7 @@ const Settings = () => {
       })
       .catch((error) => {
         if (error.status === 404) {
-          window.location.href = "/users"
+          window.location.href = '/users';
         }
       });
   }, [id, accessToken]);
@@ -184,10 +204,11 @@ const Settings = () => {
                           type="number"
                           name="userRank"
                           id="userRank"
-                          value={userDetail.userRank || 0} // Controlled input
-                          onChange={handleInputChange} // Handles changes
-                          min="0" // Minimum value
-                          max="8" // Maximum value (not strictly enforced in the input)
+                          value={userDetail.userRank} // Controlled input for userRank
+                          onChange={handleInputChange} // Handles changes in input
+                          min="-1" // Set minimum value to -1
+                          max="8" // Set maximum value to 8
+                          step="1" // Step by 1 each time (ensures one value change per click)
                         />
                       </div>
                     </div>

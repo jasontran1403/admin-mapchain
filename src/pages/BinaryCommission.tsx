@@ -3,10 +3,12 @@ import Axios from "axios";
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import CommissionTable from '../components/Tables/CommissionTable';
 import { URL } from "../types/constant";
+import Loader from '../common/Loader';
 
 const BinaryCommission = () => {
   const [accessToken, setAccessToken] = useState('');
   const [listDirectCommission, setListDirectCommission] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -17,7 +19,28 @@ const BinaryCommission = () => {
     }
   }, []);
 
+  const logout = () => {
+    let config = {
+      method: 'get',
+      url: `${URL}auth/logout/${accessToken}`, // Adjusted URL
+      headers: {
+        'ngrok-skip-browser-warning': '69420',
+      },
+    };
+  
+    Axios.request(config)
+      .then(() => {
+        localStorage.removeItem('access_token'); // Clear access token
+        window.location.href = '/auth/signin';   // Redirect to signin on success
+      })
+      .catch(() => {
+        localStorage.removeItem('access_token'); // Clear access token on error as well
+        window.location.href = '/auth/signin';   // Redirect to signin on error
+      });
+  };
+
   useEffect(() => {
+    setLoading(true);
     let config = {
       method: 'get',
       url: `${URL}admin/commission/2`,
@@ -30,9 +53,11 @@ const BinaryCommission = () => {
     Axios.request(config)
       .then((response) => {
         setListDirectCommission(response.data);
+        setLoading(false);
       })
       .catch((error) => {
-        console.log(error);
+        setLoading(false);
+
       });
   }, [accessToken]);
 
@@ -43,7 +68,7 @@ const BinaryCommission = () => {
       <Breadcrumb pageName="Binary commission transactions" />
 
       <div className="flex flex-col gap-10">
-        <CommissionTable data={listDirectCommission} />
+        {loading ? <Loader /> : <CommissionTable data={listDirectCommission} />}
       </div>
     </>
   );
