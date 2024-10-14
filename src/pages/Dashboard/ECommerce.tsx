@@ -28,8 +28,7 @@ const ECommerce: React.FC = () => {
     setLoading(true);
     let config = {
       method: 'get',
-      maxBodyLength: Infinity,
-      url: `${URL}admin/statistic`,
+      url: 'https://ghoul-helpful-salmon.ngrok-free.app/api/v1/admin/statistic',
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'ngrok-skip-browser-warning': '69420',
