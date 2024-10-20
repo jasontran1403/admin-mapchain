@@ -21,6 +21,7 @@ type User = {
   maxOut: number;
   lock: boolean;
   lockTransaction: boolean;
+  lockWithdraw: boolean;
 };
 
 interface UserTableProps {
@@ -117,7 +118,41 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
         Swal.fire({
           position: 'top-end',
           icon: 'success',
-          title: 'Toggle transaction status success',
+          title: 'Toggle transfer status success',
+          showConfirmButton: false,
+          timer: 2000,
+        }).then(() => {
+          window.location.reload();
+        });
+      })
+      .catch((error) => {
+        toast.error(error, {
+          position: 'top-right',
+          autoClose: 1500,
+        });
+      });
+  };
+
+  const handleToggleWithdraw = (userWalletAddress: string) => {
+    if (userWalletAddress === null || userWalletAddress === '') {
+      return;
+    }
+
+    let config = {
+      method: 'get',
+      url: `${URL}admin/lock-withdraw/${userWalletAddress}`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'ngrok-skip-browser-warning': '69420',
+      },
+    };
+
+    Axios.request(config)
+      .then(() => {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Toggle withdraw status success',
           showConfirmButton: false,
           timer: 2000,
         }).then(() => {
@@ -175,7 +210,10 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
                 Status
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                Transaction
+                Transfer
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                Withdraw
               </th>
               <th className="py-4 px-4 font-medium text-black dark:text-white">
                 Actions
@@ -226,6 +264,59 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
                     }`}
                   >
                     {user.lockTransaction === false ? 'Unlocked' : 'Locked'}
+                    <button
+                      className="hover:text-primary"
+                      onClick={() => {
+                        handleToggleTransaction(user.walletAddress);
+                      }}
+                    >
+                      {/* Transaction Lock Icon */}
+                      <svg
+                        className="fill-current"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 2C8.69 2 6 4.69 6 8v4H4v8h16v-8h-2V8c0-3.31-2.69-6-6-6zm4 10v6H8v-6h8zm-4-8c2.21 0 4 1.79 4 4v4H8V8c0-2.21 1.79-4 4-4z"
+                          fill=""
+                        />
+                      </svg>
+                    </button>
+                  </p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p
+                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
+                      user.lockWithdraw === false
+                        ? 'bg-success text-success'
+                        : 'bg-danger text-danger'
+                    }`}
+                  >
+                    {user.lockWithdraw === false ? 'Unlocked' : 'Locked'}
+                    <button
+                      className="hover:text-primary"
+                      onClick={() => {
+                        handleToggleWithdraw(user.walletAddress);
+                      }}
+                    >
+                      {/* Transaction Lock Icon */}
+                      <svg
+                        className="fill-current"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 2C8.69 2 6 4.69 6 8v4H4v8h16v-8h-2V8c0-3.31-2.69-6-6-6zm4 10v6H8v-6h8zm-4-8c2.21 0 4 1.79 4 4v4H8V8c0-2.21 1.79-4 4-4z"
+                          fill=""
+                        />
+                      </svg>
+                    </button>
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -272,27 +363,7 @@ const UserTable: React.FC<UserTableProps> = ({ data }) => {
                     </button>
 
                     {/* Lock Icon */}
-                    <button
-                      className="hover:text-primary"
-                      onClick={() => {
-                        handleToggleTransaction(user.walletAddress);
-                      }}
-                    >
-                      {/* Transaction Lock Icon */}
-                      <svg
-                        className="fill-current"
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M12 2C8.69 2 6 4.69 6 8v4H4v8h16v-8h-2V8c0-3.31-2.69-6-6-6zm4 10v6H8v-6h8zm-4-8c2.21 0 4 1.79 4 4v4H8V8c0-2.21 1.79-4 4-4z"
-                          fill=""
-                        />
-                      </svg>
-                    </button>
+                    
 
                     {/* Lock Icon */}
                     <button
