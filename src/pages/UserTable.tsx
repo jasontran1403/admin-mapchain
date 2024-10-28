@@ -51,7 +51,7 @@ const UserTable = () => {
     if (!accessToken) return;
 
     setLoading(true);
-
+    console.log(search.length);
     let config = {
       method: 'get',
       url: `${URL}admin/users-pagable?page=${page}&searchTerm=${search}`,
@@ -65,34 +65,38 @@ const UserTable = () => {
       .then((response) => {
         setUsers(response.data.content);
         setTotalPage(response.data.totalPages);
-        setCurrentPage(response.data.number);
+        // Không cần setCurrentPage ở đây nữa
         setLoading(false);
       })
       .catch((error) => {
         console.log(error);
         setLoading(false);
       });
-  };
+};
 
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-  };
-
-  const handleSearchChange = (term: string) => {
+const handleSearchChange = (term: string) => {
     setSearchTerm(term);
 
-    console.log(term);
     // Xóa timeout cũ nếu có
     if (timeoutId) {
-      clearTimeout(timeoutId);
+        clearTimeout(timeoutId);
     }
 
     // Đặt timeout mới
     const newTimeoutId = setTimeout(() => {
-      fetchUsers(currentPage, term); // Gọi API sau 3 giây dừng gõ
+        // Reset currentPage về 0 khi có từ khóa tìm kiếm
+        if (term.trim().length > 0) {
+            setCurrentPage(0); // Reset về trang 0
+        }
+        fetchUsers(0, term); // Gọi API với currentPage là 0
     }, 1500);
 
     setTimeoutId(newTimeoutId); // Lưu timeout mới vào state
+};
+
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
   };
 
   return (
