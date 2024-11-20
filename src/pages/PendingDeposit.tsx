@@ -12,7 +12,7 @@ import Loader from '../common/Loader';
 
 const PendingDeposit = () => {
   const [buttonDisabled, setButtonDisabled] = useState(false);
-
+  const [walletAddressCheck, setWalletAddressCheck] = useState("");
   const [accessToken, setAccessToken] = useState('');
   const [listUnCollect, setListUnCollect] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
@@ -139,20 +139,118 @@ const PendingDeposit = () => {
     });
   };
 
+  const checkDeposit = () => {
+    if (walletAddressCheck === null || walletAddressCheck === "") {
+      return;
+    }
+
+    Swal.fire({
+      title: 'Confirm check deposit of this wallet',
+      text: `Are you sure you want to collect`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, confirm it!',
+      cancelButtonText: 'No, cancel',
+      reverseButtons: true,
+      customClass: {
+        confirmButton: 'custom-confirm-button', // Custom class for confirm button
+        cancelButton: 'custom-cancel-button', // Custom class for cancel button
+      },
+      buttonsStyling: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setButtonDisabled(true);
+
+        let data = JSON.stringify({
+          "walletAddress": walletAddressCheck
+        });
+
+        let config = {
+          method: 'post',
+          maxBodyLength: Infinity,
+          url: `${URL}admin/check-deposit`,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+            'ngrok-skip-browser-warning': '69420',
+          },
+          data: data
+        };
+
+        Axios.request(config)
+          .then((response) => {
+            if (response.data === "Deposit check processing, result will be sent to telegram!") {
+              setButtonDisabled(true);
+
+              Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: `${response.data}`,
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(() => {
+                window.location.reload();
+              });
+            } else {
+              setButtonDisabled(true);
+
+              Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: `${response.data}`,
+                showConfirmButton: false,
+                timer: 1500,
+              });
+            }
+          })
+          .catch((error) => {
+            setButtonDisabled(false);
+
+            toast.error('Failed when check deposit', {
+              position: 'top-right',
+              autoClose: 1500,
+            });
+          });
+      }
+    });
+  };
+
   return (
     <>
       <Breadcrumb pageName="Pending Deposit" />
-      <div className="p-4 md:p-6 xl:p-9">
-        <div className="mb-7.5 flex flex-wrap gap-5 xl:gap-20">
-          <Link
-            to="#"
-            onClick={handleCollectAll}
-            className="inline-flex items-center justify-center rounded-md border border-primary py-4 px-10 text-center font-medium text-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
-          >
-            Collect all
-          </Link>
+      <div className="p-7">
+        <div className="mb-5.5 flex flex-col sm:flex-row gap-5.5">
+          <div className="w-full sm:w-1/3">
+            <label
+              className="mb-3 block text-sm font-medium text-black dark:text-white"
+              htmlFor="walletAddress"
+            >
+              Wallet Address
+            </label>
+            <div className="relative">
+              <input
+                className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                type="text"
+                name="walletAddress"
+                id="walletAddress"
+                value={walletAddressCheck}
+                onChange={(e) => {setWalletAddressCheck(e.target.value)}}
+                placeholder="Wallet address need to check (internal wallet address)"
+              />
+            </div>
+          </div>
+
+          <div className="w-full sm:w-1/6 flex items-end mb-2">
+            <button
+              className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-70"
+              onClick={checkDeposit}
+            >
+              Check deposit
+            </button>
+          </div>
         </div>
       </div>
+
       <div className="flex flex-col gap-10">
         {loading ? (
           <Loader />
