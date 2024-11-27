@@ -17,6 +17,10 @@ const AdminInfo = () => {
   const [bnbBalance, setBnbBalance] = useState(0);
   const [usdtBalance, setUsdtBalance] = useState(0);
   const [walletAddress, setWalletAddress] = useState('');
+  const [xrpPublicKey, setXrpPublicKey] = useState('');
+  const [xrpPrivateKey, setXrpPrivateKey] = useState('');
+  const [xrpWalletAddress, setXrpWalletAddress] = useState('');
+  const [xrpBalance, setXrpBalance] = useState(0);
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
@@ -69,6 +73,10 @@ const AdminInfo = () => {
         setTonWallet(response.data.tonWallet);
         setMnemonics(response.data.mnemonics);
         setWalletAddress(response.data.walletAddress);
+        setXrpPublicKey(response.data.xrpPublicKey);
+        setXrpPrivateKey(response.data.xrpPrivateKey);
+        setXrpWalletAddress(response.data.xrpWalletAddress);
+        setXrpBalance(response.data.xrpBalance);
       })
       .catch((error) => {
         console.log(error);
@@ -86,6 +94,9 @@ const AdminInfo = () => {
       walletAddress: walletAddress,
       mnemonics: mnemonics,
       tonWallet: tonWallet,
+      xrpWalletAddress: xrpWalletAddress,
+      xrpPublicKey: xrpPublicKey,
+      xrpPrivateKey: xrpPrivateKey,
       price: mctPrice,
     });
 
@@ -282,6 +293,88 @@ const AdminInfo = () => {
                           name="displayName"
                           id="displayName"
                           value={usdtBalance}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="walletAddress"
+                        >
+                          XRP PublicKey
+                        </label>
+                        <div className="relative">
+                          <input
+                            className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                            type="text"
+                            name="walletAddress"
+                            id="walletAddress"
+                            value={xrpPublicKey}
+                            onChange={(e) => {
+                              setXrpPublicKey(e.target.value);
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="displayName"
+                        >
+                          XRP PrivateKey
+                        </label>
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="text"
+                          name="displayName"
+                          id="displayName"
+                          value={xrpPrivateKey}
+                          onChange={(e) => {
+                            setXrpPrivateKey(e.target.value);
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="walletAddress"
+                        >
+                          XRP WalletAddress
+                        </label>
+                        <div className="relative">
+                          <input
+                            className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                            type="text"
+                            name="walletAddress"
+                            id="walletAddress"
+                            value={xrpWalletAddress}
+                            onChange={(e) => {
+                              setXrpWalletAddress(e.target.value);
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="displayName"
+                        >
+                          XRP Balance
+                        </label>
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="text"
+                          name="displayName"
+                          id="displayName"
+                          value={xrpBalance}
                           readOnly
                         />
                       </div>
