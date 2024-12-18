@@ -72,27 +72,27 @@ const UserTable = () => {
         console.log(error);
         setLoading(false);
       });
-};
+  };
 
-const handleSearchChange = (term: string) => {
+  const handleSearchChange = (term: string) => {
     setSearchTerm(term);
 
     // Xóa timeout cũ nếu có
     if (timeoutId) {
-        clearTimeout(timeoutId);
+      clearTimeout(timeoutId);
     }
 
     // Đặt timeout mới
     const newTimeoutId = setTimeout(() => {
-        // Reset currentPage về 0 khi có từ khóa tìm kiếm
-        if (term.trim().length > 0) {
-            setCurrentPage(0); // Reset về trang 0
-        }
-        fetchUsers(0, term); // Gọi API với currentPage là 0
+      // Reset currentPage về 0 khi có từ khóa tìm kiếm
+      if (term.trim().length > 0) {
+        setCurrentPage(0); // Reset về trang 0
+      }
+      fetchUsers(0, term); // Gọi API với currentPage là 0
     }, 1500);
 
     setTimeoutId(newTimeoutId); // Lưu timeout mới vào state
-};
+  };
 
 
   const handlePageChange = (newPage: number) => {

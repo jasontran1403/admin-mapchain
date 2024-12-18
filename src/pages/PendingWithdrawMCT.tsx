@@ -92,7 +92,7 @@ const PendingWithdrawMCT = () => {
         setButtonDisabled(true);
         let config = {
           method: 'get',
-          url: `${URL}admin/approve/${code}`,
+          url: `${URL}admin/approve-mct/${code}`,
           headers: {
             Authorization: `Bearer ${accessToken}`,
             'ngrok-skip-browser-warning': '69420',
