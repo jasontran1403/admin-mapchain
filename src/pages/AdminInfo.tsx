@@ -14,6 +14,7 @@ const AdminInfo = () => {
   const [mnemonics, setMnemonics] = useState('');
   const [tonWallet, setTonWallet] = useState('');
   const [mctPrice, setMctPrice] = useState(0);
+  const [fetchMCT, setFetchMCT] = useState(0);
   const [bnbBalance, setBnbBalance] = useState(0);
   const [usdtBalance, setUsdtBalance] = useState(0);
   const [walletAddress, setWalletAddress] = useState('');
@@ -21,6 +22,15 @@ const AdminInfo = () => {
   const [xrpPrivateKey, setXrpPrivateKey] = useState('');
   const [xrpWalletAddress, setXrpWalletAddress] = useState('');
   const [xrpBalance, setXrpBalance] = useState(0);
+
+  const [kaspaWalletAddress, setKaspaWalletAddress] = useState('');
+  const [kaspaPrivateKey, setKaspaPrivateKey] = useState('');
+  const [kaspaBalance, setKaspaBalance] = useState(0);
+
+  const [ethWalletAddress, setEthWalletAddress] = useState('');
+  const [ethPrivateKey, setEthPrivateKey] = useState('');
+  const [ethBalance, setEthBalance] = useState(0);
+
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
@@ -40,7 +50,7 @@ const AdminInfo = () => {
         'ngrok-skip-browser-warning': '69420',
       },
     };
-  
+
     Axios.request(config)
       .then(() => {
         localStorage.removeItem('access_token'); // Clear access token
@@ -77,6 +87,13 @@ const AdminInfo = () => {
         setXrpPrivateKey(response.data.xrpPrivateKey);
         setXrpWalletAddress(response.data.xrpWalletAddress);
         setXrpBalance(response.data.xrpBalance);
+        setKaspaWalletAddress(response.data.kaspaWalletAddress);
+        setKaspaPrivateKey(response.data.kaspaMnemonics);
+        setKaspaBalance(response.data.kaspaBalance);
+        setEthWalletAddress(response.data.ethWalletAddress);
+        setEthPrivateKey(response.data.ethMnemonics);
+        setEthBalance(response.data.ethBalance);
+        setFetchMCT(response.data.fetchMCT);
       })
       .catch((error) => {
         console.log(error);
@@ -98,6 +115,11 @@ const AdminInfo = () => {
       xrpPublicKey: xrpPublicKey,
       xrpPrivateKey: xrpPrivateKey,
       price: mctPrice,
+      fetchMCT: fetchMCT,
+      kaspaWalletAddress: kaspaWalletAddress,
+      kaspaMnemonics: kaspaPrivateKey,
+      ethWalletAddress: ethWalletAddress,
+      ethMnemonics: ethPrivateKey
     });
 
     let config = {
@@ -134,8 +156,6 @@ const AdminInfo = () => {
       .catch((error) => {
       });
   };
-
-  console.log(accessToken);
 
   return (
     <>
@@ -240,7 +260,7 @@ const AdminInfo = () => {
                     </div>
 
                     <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                      <div className="w-full">
+                      <div className="w-full sm:w-1/2">
                         <label
                           className="mb-3 block text-sm font-medium text-black dark:text-white"
                           htmlFor="displayName"
@@ -254,9 +274,29 @@ const AdminInfo = () => {
                           id="displayName"
                           value={mctPrice}
                           onChange={(e) => {
-                            setMctPrice(e.target.value);
+                            setMctPrice(Number(e.target.value));
                           }}
                         />
+                      </div>
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="realtimePrice"
+                        >
+                          Enable Realtime Price
+                        </label>
+                        <select
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          name="realtimePrice"
+                          id="realtimePrice"
+                          value={fetchMCT}
+                          onChange={(e) => {
+                            setFetchMCT(Number(e.target.value));
+                          }}
+                        >
+                          <option value={0}>Off</option>
+                          <option value={1}>On</option>
+                        </select>
                       </div>
                     </div>
 
@@ -304,7 +344,7 @@ const AdminInfo = () => {
                           className="mb-3 block text-sm font-medium text-black dark:text-white"
                           htmlFor="walletAddress"
                         >
-                          XRP PublicKey
+                          XRP WalletAddress
                         </label>
                         <div className="relative">
                           <input
@@ -312,9 +352,9 @@ const AdminInfo = () => {
                             type="text"
                             name="walletAddress"
                             id="walletAddress"
-                            value={xrpPublicKey}
+                            value={xrpWalletAddress}
                             onChange={(e) => {
-                              setXrpPublicKey(e.target.value);
+                              setXrpWalletAddress(e.target.value);
                             }}
                           />
                         </div>
@@ -341,28 +381,7 @@ const AdminInfo = () => {
                     </div>
 
                     <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                      <div className="w-full sm:w-1/2">
-                        <label
-                          className="mb-3 block text-sm font-medium text-black dark:text-white"
-                          htmlFor="walletAddress"
-                        >
-                          XRP WalletAddress
-                        </label>
-                        <div className="relative">
-                          <input
-                            className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                            type="text"
-                            name="walletAddress"
-                            id="walletAddress"
-                            value={xrpWalletAddress}
-                            onChange={(e) => {
-                              setXrpWalletAddress(e.target.value);
-                            }}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="w-full sm:w-1/2">
+                      <div className="w-full">
                         <label
                           className="mb-3 block text-sm font-medium text-black dark:text-white"
                           htmlFor="displayName"
@@ -375,6 +394,128 @@ const AdminInfo = () => {
                           name="displayName"
                           id="displayName"
                           value={xrpBalance}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="walletAddress"
+                        >
+                          Kaspa WalletAddress
+                        </label>
+                        <div className="relative">
+                          <input
+                            className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                            type="text"
+                            name="walletAddress"
+                            id="walletAddress"
+                            value={kaspaWalletAddress}
+                            onChange={(e) => {
+                              setKaspaWalletAddress(e.target.value);
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="displayName"
+                        >
+                          Kaspa PrivateKey
+                        </label>
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="text"
+                          name="displayName"
+                          id="displayName"
+                          value={kaspaPrivateKey}
+                          onChange={(e) => {
+                            setKaspaPrivateKey(e.target.value);
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                      <div className="w-full">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="displayName"
+                        >
+                          Kaspa Balance
+                        </label>
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="text"
+                          name="displayName"
+                          id="displayName"
+                          value={kaspaBalance}
+                          readOnly
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="walletAddress"
+                        >
+                          ETH WalletAddress
+                        </label>
+                        <div className="relative">
+                          <input
+                            className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                            type="text"
+                            name="walletAddress"
+                            id="walletAddress"
+                            value={ethWalletAddress}
+                            onChange={(e) => {
+                              setEthWalletAddress(e.target.value);
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="displayName"
+                        >
+                          ETH PrivateKey
+                        </label>
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="text"
+                          name="displayName"
+                          id="displayName"
+                          value={ethPrivateKey}
+                          onChange={(e) => {
+                            setEthPrivateKey(e.target.value);
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                      <div className="w-full">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="displayName"
+                        >
+                          ETH Balance
+                        </label>
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="text"
+                          name="displayName"
+                          id="displayName"
+                          value={ethBalance}
                           readOnly
                         />
                       </div>
