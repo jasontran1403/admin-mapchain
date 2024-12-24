@@ -34,7 +34,7 @@ const PendingWithdrawMCT = () => {
         'ngrok-skip-browser-warning': '69420',
       },
     };
-  
+
     Axios.request(config)
       .then(() => {
         localStorage.removeItem('access_token'); // Clear access token
@@ -66,7 +66,7 @@ const PendingWithdrawMCT = () => {
     setLoading(false);
   }, [accessToken]);
 
-  const handleApproveAll = () => {};
+  const handleApproveAll = () => { };
 
   const handleApprove = (code: string) => {
     if (buttonDisabled) return;
@@ -134,17 +134,6 @@ const PendingWithdrawMCT = () => {
   return (
     <>
       <Breadcrumb pageName="Pending withdraw" />
-      <div className="p-4 md:p-6 xl:p-9">
-        <div className="flex flex-wrap gap-5 xl:gap-20">
-          <Link
-            to="#"
-            onClick={handleApproveAll}
-            className="inline-flex items-center justify-center rounded-md border border-primary py-4 px-10 text-center font-medium text-primary hover:bg-opacity-90 lg:px-8 xl:px-10"
-          >
-            Approve all
-          </Link>
-        </div>
-      </div>
       <div className="flex flex-col gap-10">
         {loading ? (
           <Loader />

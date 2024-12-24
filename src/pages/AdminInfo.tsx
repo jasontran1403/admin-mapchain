@@ -7,6 +7,7 @@ import { URL } from '../types/constant';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
 import Loader from '../common/Loader';
+import { saveAs } from 'file-saver';
 
 const AdminInfo = () => {
   const [accessToken, setAccessToken] = useState('');
@@ -101,6 +102,29 @@ const AdminInfo = () => {
     setLoading(false);
   }, [accessToken]);
 
+  const [exportType, setExportType] = useState(0);
+
+  const handleExport = () => {
+    let config = {
+      method: 'get',
+      url: `${URL}admin/export/${exportType}`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'ngrok-skip-browser-warning': '69420',
+      },
+      responseType: 'blob', // Quan trọng để nhận dữ liệu dưới dạng file
+    };
+
+    Axios.request(config)
+      .then((response) => {
+        const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(blob, 'TransactionHistory.xlsx'); // Đặt tên file tải về
+      })
+      .catch((error) => {
+        console.error('Error downloading file:', error);
+      });
+  }
+
   const handleUpdate = () => {
     if (isNaN(mctPrice) || mctPrice <= 0) {
       return;
@@ -179,6 +203,25 @@ const AdminInfo = () => {
                       <div className="w-full sm:w-1/2">
                         <label
                           className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="displayName"
+                        >
+                          Ton wallet address
+                        </label>
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="text"
+                          name="displayName"
+                          id="displayName"
+                          value={tonWallet}
+                          onChange={(e) => {
+                            setTonWallet(e.target.value);
+                          }}
+                        />
+                      </div>
+
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
                           htmlFor="walletAddress"
                         >
                           Ton Mnemonics
@@ -195,67 +238,6 @@ const AdminInfo = () => {
                             }}
                           />
                         </div>
-                      </div>
-
-                      <div className="w-full sm:w-1/2">
-                        <label
-                          className="mb-3 block text-sm font-medium text-black dark:text-white"
-                          htmlFor="displayName"
-                        >
-                          Ton wallet address
-                        </label>
-                        <input
-                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                          type="text"
-                          name="displayName"
-                          id="displayName"
-                          value={tonWallet}
-                          onChange={(e) => {
-                            setTonWallet(e.target.value);
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                      <div className="w-full sm:w-1/2">
-                        <label
-                          className="mb-3 block text-sm font-medium text-black dark:text-white"
-                          htmlFor="walletAddress"
-                        >
-                          BSC Wallet PrivateKey
-                        </label>
-                        <div className="relative">
-                          <input
-                            className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                            type="text"
-                            name="walletAddress"
-                            id="walletAddress"
-                            value={bscPrivateKey}
-                            onChange={(e) => {
-                              setBscPrivateKey(e.target.value);
-                            }}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="w-full sm:w-1/2">
-                        <label
-                          className="mb-3 block text-sm font-medium text-black dark:text-white"
-                          htmlFor="displayName"
-                        >
-                          Wallet address BSC
-                        </label>
-                        <input
-                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                          type="text"
-                          name="displayName"
-                          id="displayName"
-                          value={walletAddress}
-                          onChange={(e) => {
-                            setWalletAddress(e.target.value);
-                          }}
-                        />
                       </div>
                     </div>
 
@@ -297,6 +279,48 @@ const AdminInfo = () => {
                           <option value={0}>Off</option>
                           <option value={1}>On</option>
                         </select>
+                      </div>
+                    </div>
+
+                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="displayName"
+                        >
+                          Wallet address BSC
+                        </label>
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="text"
+                          name="displayName"
+                          id="displayName"
+                          value={walletAddress}
+                          onChange={(e) => {
+                            setWalletAddress(e.target.value);
+                          }}
+                        />
+                      </div>
+
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="walletAddress"
+                        >
+                          BSC Wallet PrivateKey
+                        </label>
+                        <div className="relative">
+                          <input
+                            className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                            type="text"
+                            name="walletAddress"
+                            id="walletAddress"
+                            value={bscPrivateKey}
+                            onChange={(e) => {
+                              setBscPrivateKey(e.target.value);
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
 
@@ -381,7 +405,25 @@ const AdminInfo = () => {
                     </div>
 
                     <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                      <div className="w-full">
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="displayName"
+                        >
+                          XRP Public Key
+                        </label>
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="text"
+                          name="displayName"
+                          id="displayName"
+                          value={xrpPublicKey}
+                          onChange={(e) => {
+                            setXrpPublicKey(e.target.value);
+                          }}
+                        />
+                      </div>
+                      <div className="w-full sm:w-1/2">
                         <label
                           className="mb-3 block text-sm font-medium text-black dark:text-white"
                           htmlFor="displayName"
@@ -532,6 +574,44 @@ const AdminInfo = () => {
                         Save
                       </button>
                     </div>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6 mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                <div className="w-full">
+                  <label
+                    className="mb-3 block text-sm font-medium text-black dark:text-white"
+                    htmlFor="realtimePrice"
+                  >
+                    Export History
+                  </label>
+                  <select
+                    className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                    name="realtimePrice"
+                    id="realtimePrice"
+                    value={exportType}
+                    onChange={(e) => {
+                      setExportType(Number(e.target.value));
+                    }}
+                  >
+                    <option value={0}>Deposit MCT</option>
+                    <option value={1}>Deposit USDT</option>
+                    <option value={2}>Withdraw MCT</option>
+                    <option value={2}>Withdraw USDT</option>
+                    <option value={3}>Withdraw TON</option>
+                    <option value={4}>Withdraw BNB</option>
+                    <option value={5}>Withdraw XRP</option>
+                    <option value={6}>Withdraw ETH</option>
+                    <option value={7}>Withdraw KAS</option>
+                  </select>
+
+                  <div className="flex flex-col justify-ce gap-4.5">
+                    <button
+                      onClick={handleExport}
+                      className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-70"
+                    >
+                      Export
+                    </button>
                   </div>
                 </div>
               </div>

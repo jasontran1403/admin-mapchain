@@ -33,6 +33,11 @@ import DailyReward from './pages/DailyReward';
 import AdminInfo from './pages/AdminInfo';
 import PendingDepositMCT from './pages/PendingDepositMCT';
 import PendingWithdrawMCT from './pages/PendingWithdrawMCT';
+import PendingWithdrawTon from './pages/PendingWithdrawTon';
+import PendingWithdrawBnb from './pages/PendingWithdrawBnb';
+import PendingWithdrawXrp from './pages/PendingWithdrawXrp';
+import PendingWithdrawEth from './pages/PendingWithdrawEth';
+import PendingWithdrawKas from './pages/PendingWithdrawKas';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -164,6 +169,51 @@ function App() {
             <>
               <PageTitle title="Pending Deposit MCT" />
               <PendingDepositMCT />
+            </>
+          }
+        />
+        <Route
+          path="/pending-withdraw-ton"
+          element={
+            <>
+              <PageTitle title="Pending Withdraw TON" />
+              <PendingWithdrawTon />
+            </>
+          }
+        />
+        <Route
+          path="/pending-withdraw-bnb"
+          element={
+            <>
+              <PageTitle title="Pending Withdraw BNB" />
+              <PendingWithdrawBnb />
+            </>
+          }
+        />
+        <Route
+          path="/pending-withdraw-eth"
+          element={
+            <>
+              <PageTitle title="Pending Withdraw ETH" />
+              <PendingWithdrawEth />
+            </>
+          }
+        />
+        <Route
+          path="/pending-withdraw-xrp"
+          element={
+            <>
+              <PageTitle title="Pending Withdraw XRP" />
+              <PendingWithdrawXrp />
+            </>
+          }
+        />
+        <Route
+          path="/pending-withdraw-kas"
+          element={
+            <>
+              <PageTitle title="Pending Withdraw Kaspa" />
+              <PendingWithdrawKas />
             </>
           }
         />

@@ -5,15 +5,17 @@ import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import PendingWithdrawTable from '../components/Tables/PendingWithdrawTable';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { URL } from "../types/constant";
+import { URL } from '../types/constant';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
+import Loader from '../common/Loader';
 
-const PendingWithdraw = () => {
+const PendingWithdrawTon = () => {
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const [accessToken, setAccessToken] = useState('');
   const [pendingWithdraw, setPendingWithdraw] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -45,9 +47,10 @@ const PendingWithdraw = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     let config = {
       method: 'get',
-      url: `${URL}admin/pending-withdraw`,
+      url: `${URL}admin/pending-withdraw-bytype/0`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'ngrok-skip-browser-warning': '69420',
@@ -60,6 +63,7 @@ const PendingWithdraw = () => {
       })
       .catch((error) => {
       });
+    setLoading(false);
   }, [accessToken]);
 
   const handleApproveAll = () => {};
@@ -80,7 +84,7 @@ const PendingWithdraw = () => {
       reverseButtons: true,
       customClass: {
         confirmButton: 'custom-confirm-button', // Custom class for confirm button
-        cancelButton: 'custom-cancel-button',   // Custom class for cancel button
+        cancelButton: 'custom-cancel-button', // Custom class for cancel button
       },
       buttonsStyling: false,
     }).then((result) => {
@@ -88,16 +92,16 @@ const PendingWithdraw = () => {
         setButtonDisabled(true);
         let config = {
           method: 'get',
-          url: `${URL}admin/approve/${code}`,
+          url: `${URL}admin/approve-ton/${code}`,
           headers: {
             Authorization: `Bearer ${accessToken}`,
             'ngrok-skip-browser-warning': '69420',
           },
         };
-    
+
         Axios.request(config)
           .then((response) => {
-            if (response.data === "ok") {
+            if (response.data === 'ok') {
               setButtonDisabled(true);
 
               Swal.fire({
@@ -114,7 +118,7 @@ const PendingWithdraw = () => {
 
               toast.error(response.data, {
                 position: 'top-right',
-                autoClose: 1500
+                autoClose: 1500,
               });
             }
           })
@@ -125,21 +129,23 @@ const PendingWithdraw = () => {
           });
       }
     });
-
-    
   };
 
   return (
     <>
       <Breadcrumb pageName="Pending withdraw" />
       <div className="flex flex-col gap-10">
-        <PendingWithdrawTable
-          handleApprove={handleApprove}
-          data={pendingWithdraw}
-        />
+        {loading ? (
+          <Loader />
+        ) : (
+          <PendingWithdrawTable
+            handleApprove={handleApprove}
+            data={pendingWithdraw}
+          />
+        )}
       </div>
     </>
   );
 };
 
-export default PendingWithdraw;
+export default PendingWithdrawTon;

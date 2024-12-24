@@ -338,6 +338,61 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               Pending Withdraw MCT
                             </NavLink>
                           </li>
+                          <li>
+                            <NavLink
+                              to="/pending-withdraw-bnb"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Pending Withdraw BNB
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to="/pending-withdraw-ton"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Pending Withdraw TON
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to="/pending-withdraw-eth"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Pending Withdraw ETH
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to="/pending-withdraw-xrp"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Pending Withdraw XRP
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to="/pending-withdraw-kas"
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Pending Withdraw Kaspa
+                            </NavLink>
+                          </li>
                         </ul>
                       </div>
                       {/* <!-- Dropdown Menu End --> */}
