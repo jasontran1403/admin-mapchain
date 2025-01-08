@@ -4,15 +4,12 @@ import CardDataStats from '../../components/CardDataStats';
 import ChartOne from '../../components/Charts/ChartOne';
 import ChartThree from '../../components/Charts/ChartThree';
 import ChartTwo from '../../components/Charts/ChartTwo';
-import ChatCard from '../../components/Chat/ChatCard';
-import MapOne from '../../components/Maps/MapOne';
-import TableOne from '../../components/Tables/TableOne';
 import { URL } from '../../types/constant';
 import Loader from '../../common/Loader';
 
 const ECommerce: React.FC = () => {
   const [accessToken, setAccessToken] = useState('');
-  const [loading, setLoading] = useState(true); // Loading state
+  const [fetching, setFetching] = useState(false); // Loading state
   const [statistics, setStatistics] = useState({});
 
   useEffect(() => {
@@ -25,7 +22,7 @@ const ECommerce: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setLoading(true);
+    setFetching(true);
     let config = {
       method: 'get',
       url: `${URL}admin/statistic`,
@@ -38,11 +35,11 @@ const ECommerce: React.FC = () => {
     Axios.request(config)
       .then((response) => {
         setStatistics(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
+
+        setFetching(false); // Set loading to false after 2 seconds
       });
+
+
   }, [accessToken]);
 
   const formatUSDT = (amount: number) => {
@@ -55,7 +52,7 @@ const ECommerce: React.FC = () => {
 
   return (
     <>
-      {loading ? (
+      {fetching ? (
         <Loader />
       ) : (
         <>
