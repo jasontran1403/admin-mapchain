@@ -32,7 +32,7 @@ const AdminInfo = () => {
   const [ethPrivateKey, setEthPrivateKey] = useState('');
   const [ethBalance, setEthBalance] = useState(0);
 
-  const [loading, setLoading] = useState(true); // Loading state
+  const [fetching, setFetching] = useState(false); // Loading state
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -64,7 +64,7 @@ const AdminInfo = () => {
   };
 
   useEffect(() => {
-    setLoading(true);
+    setFetching(true);
     let config = {
       method: 'get',
       url: `${URL}admin/admin-tool`,
@@ -95,11 +95,14 @@ const AdminInfo = () => {
         setEthPrivateKey(response.data.ethMnemonics);
         setEthBalance(response.data.ethBalance);
         setFetchMCT(response.data.fetchMCT);
+
+        setFetching(false);
       })
       .catch((error) => {
         console.log(error);
       });
-    setLoading(false);
+
+    
   }, [accessToken]);
 
   const [exportType, setExportType] = useState(0);
@@ -186,7 +189,7 @@ const AdminInfo = () => {
       <div className="mx-auto max-w-270">
         <Breadcrumb pageName="Settings" />
 
-        {loading ? (
+        {fetching ? (
           <Loader />
         ) : (
           <div className="grid grid-cols-5 gap-8">
