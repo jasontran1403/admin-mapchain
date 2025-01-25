@@ -47,7 +47,7 @@ const PendingWithdraw = () => {
   useEffect(() => {
     let config = {
       method: 'get',
-      url: `${URL}admin/pending-withdraw`,
+      url: `${URL}admin/pending-withdraw-bytype/5`,
       headers: {
         Authorization: `Bearer ${accessToken}`,
         'ngrok-skip-browser-warning': '69420',
