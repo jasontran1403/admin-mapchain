@@ -38,6 +38,8 @@ import PendingWithdrawBnb from './pages/PendingWithdrawBnb';
 import PendingWithdrawXrp from './pages/PendingWithdrawXrp';
 import PendingWithdrawEth from './pages/PendingWithdrawEth';
 import PendingWithdrawKas from './pages/PendingWithdrawKas';
+import AdminChatbox from './pages/AdminChatbox';
+
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -196,6 +198,15 @@ function App() {
             <>
               <PageTitle title="Pending Withdraw ETH" />
               <PendingWithdrawEth />
+            </>
+          }
+        />
+        <Route
+          path="/chatbox"
+          element={
+            <>
+              <PageTitle title="Chatbox" />
+              <AdminChatbox />
             </>
           }
         />

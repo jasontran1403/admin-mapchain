@@ -11,6 +11,160 @@
 @layer components {
 }
 
+/* Chat box */
+.chatbox {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 10px;
+  width: 100%; /* Đảm bảo chatbox chiếm đủ width */
+  max-width: 100%; /* Tránh việc vượt quá cha */
+
+  height: 85svh;
+  max-height: 85svh;
+  min-height: 85svh;
+
+  /* Để phần nội dung cuộn */
+  overflow-y: auto;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.chatbox-body {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column; /* Hiển thị tin nhắn từ trên xuống dưới */
+  gap: 10px;
+}
+
+.chat-message {
+  padding: 10px;
+  border-radius: 15px;
+  max-width: 70%;
+  word-break: break-word;
+  position: relative;
+}
+
+.chat-message.sent {
+  background-color: #0084ff;
+  color: white;
+  align-self: flex-end;
+}
+
+.chat-message.received {
+  background-color: #f1f0f0;
+  color: black;
+  align-self: flex-start;
+}
+
+.received .chat-message-timestamp {
+  color: rgb(27, 27, 27);
+}
+
+.chat-message p {
+  margin: 0;
+}
+
+.chatbox-send {
+  background-color: #0084ff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chatbox-send:hover {
+  background-color: #006fd6;
+}
+
+.chatbox-send svg {
+  fill: white;
+}
+
+.chat-message-timestamp {
+  font-size: 10px;
+  color: whitesmoke;
+  font-style: italic;
+  text-align: right;
+  margin-top: 5px;
+}
+
+.chat-message-image {
+  max-width: 100%;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
+.chatbox-footer {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  gap: 10px;
+}
+
+.chatbox-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.chatbox-file-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.chatbox-send {
+  background-color: #0084ff;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chatbox-send:hover {
+  background-color: #006fd6;
+}
+
+.chatbox-preview {
+  background: #f9f9f9;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  text-align: center;
+}
+
+.chatbox-preview img {
+  max-width: 100px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+/* Chat Box End */
+
 .custom-confirm-button {
   background-color: lightblue;  /* Light blue background */
   color: white;                 /* White text */
@@ -108,6 +262,38 @@
 }
 .apexcharts-tooltip-series-group {
   @apply !pl-1.5;
+}
+
+
+.inside {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .chat-container {
+    flex-direction: column;
+  }
+
+  .inside {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-list {
+    width: 100%;
+  }
+
+  .chat-box {
+    width: 100%;
+  }
+
+  .chatbox {
+    max-height: 60svh;
+    height: 60svh;
+    min-height: 60svh;
+  }
 }
 
 .flatpickr-wrapper {
