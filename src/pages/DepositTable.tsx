@@ -102,32 +102,6 @@ const DepositTable = () => {
       <Breadcrumb pageName="Deposit transactions" />
       <div className="p-7">
         <div className="mb-5.5 flex flex-col sm:flex-row gap-5.5">
-          {/* Ô chọn ngày bắt đầu */}
-          <div className="w-full sm:w-1/3">
-            <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-              Start Date
-            </label>
-            <input
-              type="date"
-              className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-          </div>
-
-          {/* Ô chọn ngày kết thúc */}
-          <div className="w-full sm:w-1/3">
-            <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-              End Date
-            </label>
-            <input
-              type="date"
-              className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-          </div>
-
           {/* Ô nhập địa chỉ ví */}
           <div className="w-full sm:w-1/3">
             <label className="mb-3 block text-sm font-medium text-black dark:text-white">
@@ -155,6 +129,33 @@ const DepositTable = () => {
               <option value="USDT">USDT</option>
               <option value="MCT">MCT</option>
             </select>
+          </div>
+        </div>
+        <div className="mb-5.5 flex flex-col sm:flex-row gap-5.5">
+          {/* Ô chọn ngày bắt đầu */}
+          <div className="w-full sm:w-1/3">
+            <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+              Start Date
+            </label>
+            <input
+              type="date"
+              className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </div>
+
+          {/* Ô chọn ngày kết thúc */}
+          <div className="w-full sm:w-1/3">
+            <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+              End Date
+            </label>
+            <input
+              type="date"
+              className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
           </div>
 
           {/* Nút Fetch Data */}
