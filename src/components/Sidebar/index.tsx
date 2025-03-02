@@ -343,7 +343,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               Pending Withdraw USDT
                             </NavLink>
                           </li>
-                          <li>
+                          {/* <li>
                             <NavLink
                               to="/pending-deposit-mct"
                               className={({ isActive }) =>
@@ -353,8 +353,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             >
                               Uncollect Deposit MCT
                             </NavLink>
-                          </li>
-                          <li>
+                          </li> */}
+                          {/* <li>
                             <NavLink
                               to="/pending-withdraw-mct"
                               className={({ isActive }) =>
@@ -364,7 +364,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             >
                               Pending Withdraw MCT
                             </NavLink>
-                          </li>
+                          </li> */}
                           <li>
                             <NavLink
                               to="/pending-withdraw-bnb"
