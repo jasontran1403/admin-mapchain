@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { URL } from "../../types/constant";
 
 type Investment = {
   code: string;
@@ -8,6 +12,7 @@ type Investment = {
   packagePrice: number;
   date: string;
   status: number;
+  maxout: string;
 };
 
 interface InvestmentTableProps {
@@ -15,6 +20,7 @@ interface InvestmentTableProps {
 }
 
 const InvestmentTable: React.FC<InvestmentTableProps> = ({ data }) => {
+  const [accessToken, setAccessToken] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -26,6 +32,15 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({ data }) => {
     item.walletAddress.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      window.location.href = '/auth/signin';
+    } else {
+      setAccessToken(token);
+    }
+  }, []);
+
   // Calculate pagination
   const totalItems = filteredData.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -34,6 +49,84 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({ data }) => {
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+  };
+
+  const formatCode = (address: string | null) => {
+    if (!address) return ''; // Return an empty string or handle as needed
+    if (address.length <= 8) return address;
+    return `${address.slice(0, 4)}...${address.slice(-4)}`;
+  };
+
+  const formatNumberSmall = (numberString: any) => {
+    // Parse the input to ensure it's a number
+    const number = parseFloat(numberString);
+
+    // Format the number with commas and two decimal places
+    const formattedNumber = new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(number);
+
+    return formattedNumber;
+  };
+
+  const formatNumberLarge = (numberString: any) => {
+    // Parse the input to ensure it's a number
+    const number = parseFloat(numberString);
+
+    // Format the number with commas and two decimal places
+    const formattedNumber = new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(number);
+
+    return formattedNumber;
+  };
+
+  const handleToggle = (code: any) => {
+    let config = {
+      method: 'get',
+      url: `${URL}admin/toggle-stake/${code}`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'ngrok-skip-browser-warning': '69420',
+      },
+    };
+
+    Axios.request(config)
+      .then((response) => {
+        if (response.data === "Toggle stake status success") {
+          toast.success(response.data, {
+            autoClose: 1500,
+            onClose: () => window.location.reload(),
+          });
+        } else {
+          toast.error(response.data, {
+            autoClose: 1500
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  }
+
+  const copyToClipboard = (wallet: string) => {
+    navigator.clipboard
+      .writeText(wallet)
+      .then(() => {
+        toast.success('Wallet address copied to clipboard', {
+          position: 'top-right',
+          autoClose: 1500,
+        });
+      })
+      .catch((err) => {
+        toast.error(err, {
+          position: 'top-right',
+          autoClose: 1500,
+        });
+      });
   };
 
   return (
@@ -54,13 +147,15 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({ data }) => {
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">User</th>
               <th className="py-4 px-4 font-medium text-black dark:text-white">Package Info</th>
               <th className="py-4 px-4 font-medium text-black dark:text-white">Status</th>
+              <th className="py-4 px-4 font-medium text-black dark:text-white">Maxout</th>
+              <th className="py-4 px-4 font-medium text-black dark:text-white">Action</th>
             </tr>
           </thead>
           <tbody>
             {currentItems.map((packageItem, key) => (
               <tr key={key}>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">{packageItem.code}</p>
+                  <p className="text-black dark:text-white cursor-pointer" onClick={() => { copyToClipboard(packageItem.code) }}>{formatCode(packageItem.code)}</p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">{packageItem.date}</p>
@@ -75,8 +170,20 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({ data }) => {
                   <p className="text-sm">{packageItem.packagePrice} MCT</p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${packageItem.status === 0 ? 'bg-success text-info' : 'bg-danger text-danger'}`}>
+                  <p className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${packageItem.status === 0 ? 'bg-success text-info text-green-400' : 'bg-danger text-danger'}`}>
                     {packageItem.status === 0 ? 'Running' : 'Completed'}
+                  </p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p className="text-sm">{`${formatNumberSmall(packageItem.maxout)}/${formatNumberLarge(packageItem.packagePrice * 3)}`} MCT</p>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <p
+                    onClick={() => {
+                      handleToggle(packageItem.code)
+                    }}
+                    className={`btn inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium cursor-pointer ${packageItem.status === 0 ? 'bg-danger text-danger' : 'bg-success text-info text-green-400'}`}>
+                    {packageItem.status === 0 ? 'Turn Off' : 'Turn On'}
                   </p>
                 </td>
               </tr>
@@ -88,9 +195,8 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({ data }) => {
       <div className="mt-4 flex justify-center">
         <button
           onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-          className={`mx-1 px-3 py-1 rounded ${
-            currentPage === 1 ? 'bg-gray-300' : 'bg-gray-300 text-black'
-          }`}
+          className={`mx-1 px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-300' : 'bg-gray-300 text-black'
+            }`}
           disabled={currentPage === 1}
         >
           Prev
@@ -105,11 +211,10 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({ data }) => {
             <button
               key={pageIndex}
               onClick={() => handlePageChange(pageIndex)}
-              className={`mx-1 px-3 py-1 rounded ${
-                currentPage === pageIndex
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-300'
-              }`}
+              className={`mx-1 px-3 py-1 rounded ${currentPage === pageIndex
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-300'
+                }`}
             >
               {pageIndex}
             </button>
@@ -119,11 +224,10 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({ data }) => {
           onClick={() =>
             handlePageChange(Math.min(totalPages, currentPage + 1))
           }
-          className={`mx-1 px-3 py-1 rounded ${
-            currentPage === totalPages
-              ? 'bg-gray-300'
-              : 'bg-gray-300 text-black'
-          }`}
+          className={`mx-1 px-3 py-1 rounded ${currentPage === totalPages
+            ? 'bg-gray-300'
+            : 'bg-gray-300 text-black'
+            }`}
           disabled={currentPage === totalPages}
         >
           Next

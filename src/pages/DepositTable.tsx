@@ -161,7 +161,7 @@ const DepositTable = () => {
           {/* Nút Fetch Data */}
 
         </div>
-        <div className="w-full sm:w-1 flex items-end mb-2">
+        <div className="w-full flex items-end mb-2">
           <button
             className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-70"
             onClick={handleCalculateDeposit}
