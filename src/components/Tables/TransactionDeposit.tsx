@@ -129,12 +129,12 @@ const TransactionDeposit: React.FC<TransactionDepositProps> = ({ data }) => {
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
-                    {packageItem.network}
+                    {packageItem.currency === "USDT" ? "Binance Smart Chain" : "TON Network"}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className="text-black dark:text-white">
-                    {packageItem.network === "Binance Smart Chain" && formatWalletAddress(packageItem.hash)}
+                    {packageItem.currency === "USDT" && formatWalletAddress(packageItem.hash)}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
