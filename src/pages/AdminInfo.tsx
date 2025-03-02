@@ -16,6 +16,7 @@ const AdminInfo = () => {
   const [tonWallet, setTonWallet] = useState('');
   const [mctPrice, setMctPrice] = useState(0);
   const [fetchMCT, setFetchMCT] = useState(0);
+  const [slipageSwap, setSlipageSwap] = useState(0);
   const [bnbBalance, setBnbBalance] = useState(0);
   const [usdtBalance, setUsdtBalance] = useState(0);
   const [walletAddress, setWalletAddress] = useState('');
@@ -95,7 +96,7 @@ const AdminInfo = () => {
         setEthPrivateKey(response.data.ethMnemonics);
         setEthBalance(response.data.ethBalance);
         setFetchMCT(response.data.fetchMCT);
-
+        setSlipageSwap(response.data.slipageSwap);
         setFetching(false);
       })
       .catch((error) => {
@@ -245,7 +246,7 @@ const AdminInfo = () => {
                     </div>
 
                     <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                      <div className="w-full sm:w-1/2">
+                      <div className="w-full sm:w-1/3">
                         <label
                           className="mb-3 block text-sm font-medium text-black dark:text-white"
                           htmlFor="displayName"
@@ -263,7 +264,7 @@ const AdminInfo = () => {
                           }}
                         />
                       </div>
-                      <div className="w-full sm:w-1/2">
+                      <div className="w-full sm:w-1/3">
                         <label
                           className="mb-3 block text-sm font-medium text-black dark:text-white"
                           htmlFor="realtimePrice"
@@ -277,6 +278,26 @@ const AdminInfo = () => {
                           value={fetchMCT}
                           onChange={(e) => {
                             setFetchMCT(Number(e.target.value));
+                          }}
+                        >
+                          <option value={0}>Off</option>
+                          <option value={1}>On</option>
+                        </select>
+                      </div>
+                      <div className="w-full sm:w-1/3">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="realtimePrice"
+                        >
+                          SlipageSwap Status
+                        </label>
+                        <select
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          name="realtimePrice"
+                          id="realtimePrice"
+                          value={fetchMCT}
+                          onChange={(e) => {
+                            setSlipageSwap(Number(e.target.value));
                           }}
                         >
                           <option value={0}>Off</option>
