@@ -103,7 +103,7 @@ const DepositTable = () => {
       <div className="p-7">
         <div className="mb-5.5 flex flex-col sm:flex-row gap-5.5">
           {/* Ô nhập địa chỉ ví */}
-          <div className="w-full sm:w-1/3">
+          <div className="w-full sm:w-1/2">
             <label className="mb-3 block text-sm font-medium text-black dark:text-white">
               Wallet Address
             </label>
@@ -117,7 +117,7 @@ const DepositTable = () => {
           </div>
 
           {/* Ô chọn loại tiền */}
-          <div className="w-full sm:w-1/3">
+          <div className="w-full sm:w-1/2">
             <label className="mb-3 block text-sm font-medium text-black dark:text-white">
               Type
             </label>
@@ -133,7 +133,7 @@ const DepositTable = () => {
         </div>
         <div className="mb-5.5 flex flex-col sm:flex-row gap-5.5">
           {/* Ô chọn ngày bắt đầu */}
-          <div className="w-full sm:w-1/3">
+          <div className="w-full sm:w-1/2">
             <label className="mb-3 block text-sm font-medium text-black dark:text-white">
               Start Date
             </label>
@@ -146,7 +146,7 @@ const DepositTable = () => {
           </div>
 
           {/* Ô chọn ngày kết thúc */}
-          <div className="w-full sm:w-1/3">
+          <div className="w-full sm:w-1/2">
             <label className="mb-3 block text-sm font-medium text-black dark:text-white">
               End Date
             </label>
@@ -159,14 +159,15 @@ const DepositTable = () => {
           </div>
 
           {/* Nút Fetch Data */}
-          <div className="w-full sm:w-1/3 flex items-end mb-2">
-            <button
-              className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-70"
-              onClick={handleCalculateDeposit}
-            >
-              Fetch Data
-            </button>
-          </div>
+
+        </div>
+        <div className="w-full sm:w-1 flex items-end mb-2">
+          <button
+            className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-70"
+            onClick={handleCalculateDeposit}
+          >
+            Fetch Data
+          </button>
         </div>
 
         {/* Hiển thị tổng deposit */}
