@@ -137,28 +137,22 @@ const AdminChatbox = () => {
 
     Axios.request(config)
       .then((response) => {
-        const oldMessages = response.data;
+        const newMessages = response.data;
 
         setUserMessages((prevUserMessages) => {
-          const newUserMessages = new Map(prevUserMessages);
-
-          if (!newUserMessages.has(user)) {
-            newUserMessages.set(user, []);
-          }
-
-          const updatedMessages = newUserMessages.get(user) || [];
-          newUserMessages.set(user, [...oldMessages, ...updatedMessages]);
-
-          return newUserMessages;
+          const updatedUserMessages = new Map(prevUserMessages);
+          updatedUserMessages.set(user, newMessages); // Thay thế toàn bộ dữ liệu cũ
+          return updatedUserMessages;
         });
 
         // Đảm bảo rằng scroll xuống cuối sẽ xảy ra sau khi tin nhắn đã được cập nhật
-        setTimeout(() => scrollToBottom(), 100);  // Độ trễ nhỏ để đảm bảo cuộn xuống cuối
+        setTimeout(() => scrollToBottom(), 100);
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
 
   const handleSendReply = () => {
     const localTime = new Date(Date.now()); // Thời gian local
@@ -274,7 +268,6 @@ const AdminChatbox = () => {
           </div>
         </div>
       </div>
-
 
       {/* Bên phải */}
       <div className="w-2/3 chat-box flex pt-2">
