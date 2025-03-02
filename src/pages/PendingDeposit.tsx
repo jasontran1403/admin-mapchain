@@ -34,7 +34,7 @@ const PendingDeposit = () => {
         'ngrok-skip-browser-warning': '69420',
       },
     };
-  
+
     Axios.request(config)
       .then(() => {
         localStorage.removeItem('access_token'); // Clear access token
@@ -45,7 +45,7 @@ const PendingDeposit = () => {
         window.location.href = '/auth/signin';   // Redirect to signin on error
       });
   };
-  
+
   useEffect(() => {
     setLoading(true);
     let config = {
@@ -69,7 +69,7 @@ const PendingDeposit = () => {
     setLoading(false);
   }, [accessToken]);
 
-  const handleCollectAll = () => {};
+  const handleCollectAll = () => { };
 
   const handleCollectWallet = (walletAddress: string) => {
     if (buttonDisabled) return;
@@ -218,9 +218,9 @@ const PendingDeposit = () => {
   return (
     <>
       <Breadcrumb pageName="Pending Deposit" />
-      <div className="p-7">
+      {localStorage.getItem("wallet_address") === "root" && <div className="p-7">
         <div className="mb-5.5 flex flex-col sm:flex-row gap-5.5">
-          <div className="w-full sm:w-1/3">
+          <div className="w-full ">
             <label
               className="mb-3 block text-sm font-medium text-black dark:text-white"
               htmlFor="walletAddress"
@@ -234,13 +234,13 @@ const PendingDeposit = () => {
                 name="walletAddress"
                 id="walletAddress"
                 value={walletAddressCheck}
-                onChange={(e) => {setWalletAddressCheck(e.target.value)}}
+                onChange={(e) => { setWalletAddressCheck(e.target.value) }}
                 placeholder="Wallet address need to check (internal wallet address)"
               />
             </div>
           </div>
 
-          <div className="w-full sm:w-1/6 flex items-end mb-2">
+          <div className="w-full sm:w-1/2 flex items-end mb-2">
             <button
               className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-70"
               onClick={checkDeposit}
@@ -249,7 +249,7 @@ const PendingDeposit = () => {
             </button>
           </div>
         </div>
-      </div>
+      </div>}
 
       <div className="flex flex-col gap-10">
         {loading ? (
