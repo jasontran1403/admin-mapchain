@@ -96,7 +96,7 @@ const AdminInfo = () => {
         setEthPrivateKey(response.data.ethMnemonics);
         setEthBalance(response.data.ethBalance);
         setFetchMCT(response.data.fetchMCT);
-        setSlipageSwap(response.data.slipageSwap);
+        setSlipageSwap(response.data.slippageSwap);
         setFetching(false);
       })
       .catch((error) => {
@@ -144,6 +144,7 @@ const AdminInfo = () => {
       xrpPrivateKey: xrpPrivateKey,
       price: mctPrice,
       fetchMCT: fetchMCT,
+      slippageSwap: slipageSwap,
       kaspaWalletAddress: kaspaWalletAddress,
       kaspaMnemonics: kaspaPrivateKey,
       ethWalletAddress: ethWalletAddress,
@@ -295,7 +296,7 @@ const AdminInfo = () => {
                           className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                           name="realtimePrice"
                           id="realtimePrice"
-                          value={fetchMCT}
+                          value={slipageSwap}
                           onChange={(e) => {
                             setSlipageSwap(Number(e.target.value));
                           }}
