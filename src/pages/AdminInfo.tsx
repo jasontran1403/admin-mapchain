@@ -621,12 +621,12 @@ const AdminInfo = () => {
                     <option value={0}>Deposit MCT</option>
                     <option value={1}>Deposit USDT</option>
                     <option value={2}>Withdraw MCT</option>
-                    <option value={2}>Withdraw USDT</option>
-                    <option value={3}>Withdraw TON</option>
-                    <option value={4}>Withdraw BNB</option>
-                    <option value={5}>Withdraw XRP</option>
-                    <option value={6}>Withdraw ETH</option>
-                    <option value={7}>Withdraw KAS</option>
+                    <option value={3}>Withdraw USDT</option>
+                    <option value={4}>Withdraw TON</option>
+                    <option value={5}>Withdraw BNB</option>
+                    <option value={6}>Withdraw XRP</option>
+                    <option value={7}>Withdraw ETH</option>
+                    <option value={8}>Withdraw KAS</option>
                   </select>
 
                   <div className="flex flex-col justify-ce gap-4.5">
