@@ -74,6 +74,7 @@ const UserInfo = () => {
         setTonAddress(response.data.tonAddress);
         setDisplayName(response.data.displayName);
         setUsdtBalance(response.data.bepBalance);
+        setMctTransferBalance(response.data.transferBalance);
         setTonBalance(response.data.tonBalance);
         setMctBalance(response.data.mapchainBalance);
         setMctDailyBalance(response.data.mctDailyBalance);
