@@ -218,7 +218,7 @@ const PendingDeposit = () => {
   return (
     <>
       <Breadcrumb pageName="Pending Deposit" />
-      {localStorage.getItem("wallet_address") === "root" && <div className="p-7">
+      <div className="p-7">
         <div className="mb-5.5 flex flex-col sm:flex-row gap-5.5">
           <div className="w-full ">
             <label
@@ -249,7 +249,7 @@ const PendingDeposit = () => {
             </button>
           </div>
         </div>
-      </div>}
+      </div>
 
       <div className="flex flex-col gap-10">
         {loading ? (

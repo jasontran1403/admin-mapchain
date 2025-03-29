@@ -39,6 +39,7 @@ import PendingWithdrawXrp from './pages/PendingWithdrawXrp';
 import PendingWithdrawEth from './pages/PendingWithdrawEth';
 import PendingWithdrawKas from './pages/PendingWithdrawKas';
 import AdminChatbox from './pages/AdminChatbox';
+import UserInfo from './pages/UserInfo';
 
 
 function App() {
@@ -244,6 +245,15 @@ function App() {
             <>
               <PageTitle title="User page" />
               <Settings />
+            </>
+          }
+        />
+        <Route
+          path="/user-info/:id"
+          element={
+            <>
+              <PageTitle title="User info" />
+              <UserInfo />
             </>
           }
         />

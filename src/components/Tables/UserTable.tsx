@@ -26,14 +26,21 @@ type User = {
 
 interface UserTableProps {
   data: User[];
-  currentPage?: number,
-  totalPage?: number,
+  currentPage?: number;
+  totalPage?: number;
   searchTerm: string; // Nhận searchTerm từ props
   onSearchChange: (term: string) => void; // Nhận hàm để thay đổi searchTerm
   onPageChange: (newPage: number) => void; // Function to handle page change
 }
 
-const UserTable: React.FC<UserTableProps> = ({ data , currentPage = 0,  totalPage = 0, onPageChange, searchTerm, onSearchChange }) => {
+const UserTable: React.FC<UserTableProps> = ({
+  data,
+  currentPage = 0,
+  totalPage = 0,
+  onPageChange,
+  searchTerm,
+  onSearchChange,
+}) => {
   const [accessToken] = useState(localStorage.getItem('access_token'));
 
   const [page, setPage] = useState(currentPage);
@@ -58,11 +65,21 @@ const UserTable: React.FC<UserTableProps> = ({ data , currentPage = 0,  totalPag
     window.location.href = `/user/${userWallet}`;
   };
 
-  const pageNumbers = Array.from({ length: Math.min(5, totalPage) }, (_, index) => {
-    const startPage = Math.max(0, currentPage - 2); // Start at currentPage - 2
-    return startPage + index; // Generate page numbers based on the starting point
-  }).filter(page => page < totalPage); // Ensure no out-of-bound pages
+  const handleUserInfo = (userWallet: string) => {
+    if (userWallet === null || userWallet === '') {
+      return;
+    }
 
+    window.location.href = `/user-info/${userWallet}`;
+  };
+
+  const pageNumbers = Array.from(
+    { length: Math.min(5, totalPage) },
+    (_, index) => {
+      const startPage = Math.max(0, currentPage - 2); // Start at currentPage - 2
+      return startPage + index; // Generate page numbers based on the starting point
+    },
+  ).filter((page) => page < totalPage); // Ensure no out-of-bound pages
 
   const handleToggle = (userWalletAddress: string) => {
     if (userWalletAddress === null || userWalletAddress === '') {
@@ -181,8 +198,7 @@ const UserTable: React.FC<UserTableProps> = ({ data , currentPage = 0,  totalPag
       },
     };
 
-    Axios
-      .request(config)
+    Axios.request(config)
       .then(() => {
         Swal.fire({
           position: 'top-end',
@@ -411,6 +427,72 @@ const UserTable: React.FC<UserTableProps> = ({ data , currentPage = 0,  totalPag
                       </svg>
                     </a>
 
+                    <button className="hover:text-primary"
+                      onClick={() => handleUserInfo(user.walletAddress)}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        x="0px"
+                        y="0px"
+                        width="15"
+                        height="15"
+                        viewBox="0 0 48 48"
+                      >
+                        <linearGradient
+                          id="Z3eIuf5QY2EetuA~FfDd6a_VQOfeAx5KWTK_gr1"
+                          x1="9.899"
+                          x2="38.183"
+                          y1="9.98"
+                          y2="38.264"
+                          gradientUnits="userSpaceOnUse"
+                        >
+                          <stop offset="0" stop-color="#33bef0"></stop>
+                          <stop offset="1" stop-color="#0a85d9"></stop>
+                        </linearGradient>
+                        <path
+                          fill="url(#Z3eIuf5QY2EetuA~FfDd6a_VQOfeAx5KWTK_gr1)"
+                          d="M44.041,24.122c0,11.045-8.955,20-20,20s-20-8.955-20-20s8.955-20,20-20	S44.041,13.077,44.041,24.122z"
+                        ></path>
+                        <path
+                          d="M22,36h4c0.552,0,1-0.448,1-1V20c0-0.552-0.448-1-1-1h-4c-0.552,0-1,0.448-1,1v15	C21,35.552,21.448,36,22,36z"
+                          opacity=".05"
+                        ></path>
+                        <path
+                          d="M22.227,35.5h3.547c0.401,0,0.727-0.325,0.727-0.727V20.227c0-0.401-0.325-0.727-0.727-0.727h-3.547	c-0.401,0-0.727,0.325-0.727,0.727v14.547C21.5,35.175,21.825,35.5,22.227,35.5z"
+                          opacity=".07"
+                        ></path>
+                        <radialGradient
+                          id="Z3eIuf5QY2EetuA~FfDd6b_VQOfeAx5KWTK_gr2"
+                          cx="24"
+                          cy="16"
+                          r="5.108"
+                          gradientTransform="matrix(.7808 0 0 .7066 5.26 4.096)"
+                          gradientUnits="userSpaceOnUse"
+                        >
+                          <stop offset=".516"></stop>
+                          <stop offset="1" stop-opacity="0"></stop>
+                        </radialGradient>
+                        <ellipse
+                          cx="24"
+                          cy="15.402"
+                          fill="url(#Z3eIuf5QY2EetuA~FfDd6b_VQOfeAx5KWTK_gr2)"
+                          opacity=".15"
+                          rx="3.988"
+                          ry="3.609"
+                        ></ellipse>
+                        <path
+                          fill="#fff"
+                          d="M24,17.732c1.7,0,2.65-1.068,2.65-2.388C26.65,14.024,25.647,13,24,13s-2.65,1.024-2.65,2.344	C21.35,16.664,22.3,17.732,24,17.732z"
+                        ></path>
+                        <rect
+                          width="4"
+                          height="15"
+                          x="22"
+                          y="20"
+                          fill="#fff"
+                        ></rect>
+                      </svg>
+                    </button>
+
                     {/* Eye Icon */}
                     <button
                       className="hover:text-primary"
@@ -465,17 +547,23 @@ const UserTable: React.FC<UserTableProps> = ({ data , currentPage = 0,  totalPag
       {/* Pagination Controls */}
       <div className="mt-4 flex justify-center">
         <button
-          className={`mx-1 px-3 py-1 rounded ${currentPage === 0 ? 'bg-gray-300' : 'bg-gray-300 text-black'}`}
+          className={`mx-1 px-3 py-1 rounded ${
+            currentPage === 0 ? 'bg-gray-300' : 'bg-gray-300 text-black'
+          }`}
           onClick={handlePrev}
           disabled={currentPage === 0}
         >
           Prev
         </button>
 
-        {pageNumbers.map(pageIndex => (
+        {pageNumbers.map((pageIndex) => (
           <button
             key={pageIndex}
-            className={`mx-1 px-3 py-1 rounded ${currentPage === pageIndex ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
+            className={`mx-1 px-3 py-1 rounded ${
+              currentPage === pageIndex
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-300'
+            }`}
             onClick={() => onPageChange(pageIndex)}
           >
             {pageIndex + 1}
@@ -483,7 +571,11 @@ const UserTable: React.FC<UserTableProps> = ({ data , currentPage = 0,  totalPag
         ))}
 
         <button
-          className={`mx-1 px-3 py-1 rounded ${currentPage === totalPage - 1 ? 'bg-gray-300' : 'bg-gray-300 text-black'}`}
+          className={`mx-1 px-3 py-1 rounded ${
+            currentPage === totalPage - 1
+              ? 'bg-gray-300'
+              : 'bg-gray-300 text-black'
+          }`}
           onClick={handleNext}
           disabled={currentPage === totalPage - 1}
         >
