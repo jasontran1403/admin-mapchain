@@ -73,10 +73,15 @@ const TransferTable = () => {
       });
   }, [accessToken]);
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     if (buttonDisabled) return;
     const { name, value } = e.target;
 
+    console.log({name, value});
+  
+    // convert value to number for specific fields
+    const newValue = name === 'type' ? Number(value) : value;
+  
     if (name === 'amount') {
       const numericValue = Number(value);
       if (isNaN(numericValue) || numericValue < 0) {
@@ -87,12 +92,13 @@ const TransferTable = () => {
         return;
       }
     }
-
+  
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: newValue,
     }));
   };
+  
 
   const handleTransfer = () => {
     const { walletAddress, amount, type } = formData;
@@ -234,7 +240,8 @@ const TransferTable = () => {
               value={formData.type}
               onChange={handleInputChange}
             >
-              <option value="2">MCT</option>
+              <option value="1">MCT</option>
+              <option value="2">TON</option>
             </select>
           </div>
 
