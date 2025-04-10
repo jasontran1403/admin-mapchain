@@ -77,8 +77,6 @@ const TransferTable = () => {
     if (buttonDisabled) return;
     const { name, value } = e.target;
 
-    console.log({name, value});
-  
     // convert value to number for specific fields
     const newValue = name === 'type' ? Number(value) : value;
   
