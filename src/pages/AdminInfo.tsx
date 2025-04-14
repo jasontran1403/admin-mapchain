@@ -34,6 +34,7 @@ const AdminInfo = () => {
   const [ethBalance, setEthBalance] = useState(0);
 
   const [fetching, setFetching] = useState(false); // Loading state
+  const [slippageRate, setSlippageRate] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -98,6 +99,7 @@ const AdminInfo = () => {
         setFetchMCT(response.data.fetchMCT);
         setSlipageSwap(response.data.slippageSwap);
         setFetching(false);
+        setSlippageRate(response.data.slippageRate);
       })
       .catch((error) => {
         console.log(error);
@@ -148,7 +150,8 @@ const AdminInfo = () => {
       kaspaWalletAddress: kaspaWalletAddress,
       kaspaMnemonics: kaspaPrivateKey,
       ethWalletAddress: ethWalletAddress,
-      ethMnemonics: ethPrivateKey
+      ethMnemonics: ethPrivateKey,
+      slippageRate: slippageRate
     });
 
     let config = {
@@ -247,7 +250,7 @@ const AdminInfo = () => {
                     </div>
 
                     <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                      <div className="w-full sm:w-1/3">
+                      <div className="w-full sm:w-1/2">
                         <label
                           className="mb-3 block text-sm font-medium text-black dark:text-white"
                           htmlFor="displayName"
@@ -265,7 +268,7 @@ const AdminInfo = () => {
                           }}
                         />
                       </div>
-                      <div className="w-full sm:w-1/3">
+                      <div className="w-full sm:w-1/2">
                         <label
                           className="mb-3 block text-sm font-medium text-black dark:text-white"
                           htmlFor="realtimePrice"
@@ -285,7 +288,29 @@ const AdminInfo = () => {
                           <option value={1}>On</option>
                         </select>
                       </div>
-                      <div className="w-full sm:w-1/3">
+                    </div>
+
+                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                      <div className="w-full sm:w-1/2">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="displayName"
+                        >
+                          Slippage Rate
+                        </label>
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="number"
+                          name="displayName"
+                          id="displayName"
+                          value={slippageRate}
+                          onChange={(e) => {
+                            setSlippageRate(Number(e.target.value));
+                          }}
+                        />
+                      </div>
+                      
+                      <div className="w-full sm:w-1/2">
                         <label
                           className="mb-3 block text-sm font-medium text-black dark:text-white"
                           htmlFor="realtimePrice"
