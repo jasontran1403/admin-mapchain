@@ -151,7 +151,7 @@ const AdminInfo = () => {
       kaspaMnemonics: kaspaPrivateKey,
       ethWalletAddress: ethWalletAddress,
       ethMnemonics: ethPrivateKey,
-      slippageRate: slippageRate
+      slippageRate: slippageRate > 0 ? slippageRate : 1
     });
 
     let config = {
