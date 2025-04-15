@@ -29,7 +29,8 @@ const UserInfo = () => {
   const [tonBinaryBalance, setTonBinaryBalance] = useState(0);
   const [tonLeaderBalance, setTonLeaderBalance] = useState(0);
   const [tonPopBalance, setTonPopBalance] = useState(0);
-  
+  const [slippageRate, setSlippageRate] = useState(0);
+
   // State mới để quản lý ô input đang active
   const [activeBalanceField, setActiveBalanceField] = useState(null);
   const [currentBalance, setCurrentBalance] = useState(0);
@@ -87,6 +88,7 @@ const UserInfo = () => {
         setTonBinaryBalance(response.data.tonBinaryBalance);
         setTonLeaderBalance(response.data.tonLeaderBalance);
         setTonPopBalance(response.data.tonPOPBalance);
+        setSlippageRate(response.data.slippageRate);
       })
       .catch((error) => {
         if (error.response?.status === 404) {
@@ -109,12 +111,18 @@ const UserInfo = () => {
     setter(value);
   };
 
-  const isBalanceFieldDisabled = (fieldName : string) => {
+  const isBalanceFieldDisabled = (fieldName: string) => {
     return activeBalanceField !== null && activeBalanceField !== fieldName;
   };
 
   const handleUpdateBalance = () => {
-    if (walletSource === -1 || activeBalanceField === null || currentBalance === newBalance || newBalance < 0) return;
+    if (
+      walletSource === -1 ||
+      activeBalanceField === null ||
+      currentBalance === newBalance ||
+      newBalance < 0
+    )
+      return;
 
     let data = JSON.stringify({
       walletAddress: id,
@@ -128,7 +136,7 @@ const UserInfo = () => {
       url: `${URL}admin/update-user-balance`,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         'ngrok-skip-browser-warning': '69420',
       },
       data: data,
@@ -144,9 +152,9 @@ const UserInfo = () => {
             showConfirmButton: false,
             timer: 2000,
           }).then(() => {
-              setActiveBalanceField(null);
-              window.location.reload();
-            });
+            setActiveBalanceField(null);
+            window.location.reload();
+          });
         } else {
           toast.error(response.data, {
             position: 'top-right',
@@ -160,12 +168,13 @@ const UserInfo = () => {
   };
 
   const handleUpdateWallet = () => {
-    if (usdtAddress === "" && tonAddress === "") return;
+    if (usdtAddress === '' && tonAddress === '') return;
 
     let data = JSON.stringify({
       walletAddress: id,
       newBep: usdtAddress,
       newTon: tonAddress,
+      slippageRate: slippageRate
     });
 
     let config = {
@@ -173,7 +182,7 @@ const UserInfo = () => {
       url: `${URL}admin/update-user-wallet`,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         'ngrok-skip-browser-warning': '69420',
       },
       data: data,
@@ -243,7 +252,7 @@ const UserInfo = () => {
                     </div>
 
                     <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                      <div className="w-full sm:w-1/2">
+                      <div className="w-full sm:w-1/3">
                         <label
                           className="mb-3 block text-sm font-medium text-black dark:text-white"
                           htmlFor="displayName"
@@ -260,7 +269,7 @@ const UserInfo = () => {
                         />
                       </div>
 
-                      <div className="w-full sm:w-1/2">
+                      <div className="w-full sm:w-1/3">
                         <label
                           className="mb-3 block text-sm font-medium text-black dark:text-white"
                           htmlFor="walletAddress"
@@ -278,6 +287,47 @@ const UserInfo = () => {
                           />
                         </div>
                       </div>
+
+                      <div className="w-full sm:w-1/3">
+                        <label
+                          className="mb-3 block text-sm font-medium text-red-600 dark:text-red-600"
+                          htmlFor="walletAddress"
+                        >
+                          Slippage Rate
+                        </label>
+                        <div className="relative">
+                          <input
+                            className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-red-600 focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-red-600 dark:focus:border-primary"
+                            type="number"
+                            name="walletAddress"
+                            id="walletAddress"
+                            min="0"
+                            max="100"
+                            value={slippageRate}
+                            onChange={(e) => {
+                              let value = e.target.value;
+
+                              if (value === '') {
+                                setSlippageRate(0);
+                                return;
+                              }
+
+                              const number = Number(value);
+
+                              if (isNaN(number)) {
+                                setSlippageRate(0);
+                                return;
+                              }
+
+                              const clamped = Math.max(
+                                0,
+                                Math.min(100, number),
+                              );
+                              setSlippageRate(clamped);
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
 
                     <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
@@ -290,14 +340,24 @@ const UserInfo = () => {
                         </label>
                         <input
                           className={`w-full rounded border border-stroke py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                            isBalanceFieldDisabled('usdtBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                            isBalanceFieldDisabled('usdtBalance')
+                              ? 'bg-gray-100 dark:bg-meta-4'
+                              : 'bg-gray dark:bg-meta-4'
                           }`}
                           type="number"
                           name="displayName"
                           id="displayName"
                           value={usdtBalance}
-                          onChange={(e) => handleBalanceChange('usdtBalance', Number(e.target.value), setUsdtBalance)}
-                          onFocus={() => handleBalanceFocus('usdtBalance', usdtBalance, 0)}
+                          onChange={(e) =>
+                            handleBalanceChange(
+                              'usdtBalance',
+                              Number(e.target.value),
+                              setUsdtBalance,
+                            )
+                          }
+                          onFocus={() =>
+                            handleBalanceFocus('usdtBalance', usdtBalance, 0)
+                          }
                           disabled={isBalanceFieldDisabled('usdtBalance')}
                         />
                       </div>
@@ -313,14 +373,24 @@ const UserInfo = () => {
                         </label>
                         <input
                           className={`w-full rounded border border-stroke py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                            isBalanceFieldDisabled('mctBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                            isBalanceFieldDisabled('mctBalance')
+                              ? 'bg-gray-100 dark:bg-meta-4'
+                              : 'bg-gray dark:bg-meta-4'
                           }`}
                           type="number"
                           name="displayName"
                           id="displayName"
                           value={mctBalance}
-                          onChange={(e) => handleBalanceChange('mctBalance', Number(e.target.value), setMctBalance)}
-                          onFocus={() => handleBalanceFocus('mctBalance', mctBalance, 1)}
+                          onChange={(e) =>
+                            handleBalanceChange(
+                              'mctBalance',
+                              Number(e.target.value),
+                              setMctBalance,
+                            )
+                          }
+                          onFocus={() =>
+                            handleBalanceFocus('mctBalance', mctBalance, 1)
+                          }
                           disabled={isBalanceFieldDisabled('mctBalance')}
                         />
                       </div>
@@ -335,15 +405,31 @@ const UserInfo = () => {
                         <div className="relative">
                           <input
                             className={`w-full rounded border border-stroke py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                              isBalanceFieldDisabled('mctTransferBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                              isBalanceFieldDisabled('mctTransferBalance')
+                                ? 'bg-gray-100 dark:bg-meta-4'
+                                : 'bg-gray dark:bg-meta-4'
                             }`}
                             type="number"
                             name="walletAddress"
                             id="walletAddress"
                             value={mctTransferBalance}
-                            onChange={(e) => handleBalanceChange('mctTransferBalance', Number(e.target.value), setMctTransferBalance)}
-                            onFocus={() => handleBalanceFocus('mctTransferBalance', mctTransferBalance, 2)}
-                            disabled={isBalanceFieldDisabled('mctTransferBalance')}
+                            onChange={(e) =>
+                              handleBalanceChange(
+                                'mctTransferBalance',
+                                Number(e.target.value),
+                                setMctTransferBalance,
+                              )
+                            }
+                            onFocus={() =>
+                              handleBalanceFocus(
+                                'mctTransferBalance',
+                                mctTransferBalance,
+                                2,
+                              )
+                            }
+                            disabled={isBalanceFieldDisabled(
+                              'mctTransferBalance',
+                            )}
                           />
                         </div>
                       </div>
@@ -359,14 +445,28 @@ const UserInfo = () => {
                         </label>
                         <input
                           className={`w-full rounded border border-stroke py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                            isBalanceFieldDisabled('mctDailyBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                            isBalanceFieldDisabled('mctDailyBalance')
+                              ? 'bg-gray-100 dark:bg-meta-4'
+                              : 'bg-gray dark:bg-meta-4'
                           }`}
                           type="number"
                           name="displayName"
                           id="displayName"
                           value={mctDailyBalance}
-                          onChange={(e) => handleBalanceChange('mctDailyBalance', Number(e.target.value), setMctDailyBalance)}
-                          onFocus={() => handleBalanceFocus('mctDailyBalance', mctDailyBalance, 3)}
+                          onChange={(e) =>
+                            handleBalanceChange(
+                              'mctDailyBalance',
+                              Number(e.target.value),
+                              setMctDailyBalance,
+                            )
+                          }
+                          onFocus={() =>
+                            handleBalanceFocus(
+                              'mctDailyBalance',
+                              mctDailyBalance,
+                              3,
+                            )
+                          }
                           disabled={isBalanceFieldDisabled('mctDailyBalance')}
                         />
                       </div>
@@ -381,15 +481,31 @@ const UserInfo = () => {
                         <div className="relative">
                           <input
                             className={`w-full rounded border border-stroke py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                              isBalanceFieldDisabled('mctDirectBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                              isBalanceFieldDisabled('mctDirectBalance')
+                                ? 'bg-gray-100 dark:bg-meta-4'
+                                : 'bg-gray dark:bg-meta-4'
                             }`}
                             type="number"
                             name="walletAddress"
                             id="walletAddress"
                             value={mctDirectBalance}
-                            onChange={(e) => handleBalanceChange('mctDirectBalance', Number(e.target.value), setMctDirectBalance)}
-                            onFocus={() => handleBalanceFocus('mctDirectBalance', mctDirectBalance, 4)}
-                            disabled={isBalanceFieldDisabled('mctDirectBalance')}
+                            onChange={(e) =>
+                              handleBalanceChange(
+                                'mctDirectBalance',
+                                Number(e.target.value),
+                                setMctDirectBalance,
+                              )
+                            }
+                            onFocus={() =>
+                              handleBalanceFocus(
+                                'mctDirectBalance',
+                                mctDirectBalance,
+                                4,
+                              )
+                            }
+                            disabled={isBalanceFieldDisabled(
+                              'mctDirectBalance',
+                            )}
                           />
                         </div>
                       </div>
@@ -405,14 +521,28 @@ const UserInfo = () => {
                         </label>
                         <input
                           className={`w-full rounded border border-stroke py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                            isBalanceFieldDisabled('mctBinaryBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                            isBalanceFieldDisabled('mctBinaryBalance')
+                              ? 'bg-gray-100 dark:bg-meta-4'
+                              : 'bg-gray dark:bg-meta-4'
                           }`}
                           type="number"
                           name="displayName"
                           id="displayName"
                           value={mctBinaryBalance}
-                          onChange={(e) => handleBalanceChange('mctBinaryBalance', Number(e.target.value), setMctBinaryBalance)}
-                          onFocus={() => handleBalanceFocus('mctBinaryBalance', mctBinaryBalance, 5)}
+                          onChange={(e) =>
+                            handleBalanceChange(
+                              'mctBinaryBalance',
+                              Number(e.target.value),
+                              setMctBinaryBalance,
+                            )
+                          }
+                          onFocus={() =>
+                            handleBalanceFocus(
+                              'mctBinaryBalance',
+                              mctBinaryBalance,
+                              5,
+                            )
+                          }
                           disabled={isBalanceFieldDisabled('mctBinaryBalance')}
                         />
                       </div>
@@ -427,15 +557,31 @@ const UserInfo = () => {
                         <div className="relative">
                           <input
                             className={`w-full rounded border border-stroke py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                              isBalanceFieldDisabled('mctLeaderBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                              isBalanceFieldDisabled('mctLeaderBalance')
+                                ? 'bg-gray-100 dark:bg-meta-4'
+                                : 'bg-gray dark:bg-meta-4'
                             }`}
                             type="number"
                             name="walletAddress"
                             id="walletAddress"
                             value={mctLeaderBalance}
-                            onChange={(e) => handleBalanceChange('mctLeaderBalance', Number(e.target.value), setMctLeaderBalance)}
-                            onFocus={() => handleBalanceFocus('mctLeaderBalance', mctLeaderBalance, 6)}
-                            disabled={isBalanceFieldDisabled('mctLeaderBalance')}
+                            onChange={(e) =>
+                              handleBalanceChange(
+                                'mctLeaderBalance',
+                                Number(e.target.value),
+                                setMctLeaderBalance,
+                              )
+                            }
+                            onFocus={() =>
+                              handleBalanceFocus(
+                                'mctLeaderBalance',
+                                mctLeaderBalance,
+                                6,
+                              )
+                            }
+                            disabled={isBalanceFieldDisabled(
+                              'mctLeaderBalance',
+                            )}
                           />
                         </div>
                       </div>
@@ -451,14 +597,28 @@ const UserInfo = () => {
                         </label>
                         <input
                           className={`w-full rounded border border-stroke py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                            isBalanceFieldDisabled('mctPopBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                            isBalanceFieldDisabled('mctPopBalance')
+                              ? 'bg-gray-100 dark:bg-meta-4'
+                              : 'bg-gray dark:bg-meta-4'
                           }`}
                           type="number"
                           name="displayName"
                           id="displayName"
                           value={mctPopBalance}
-                          onChange={(e) => handleBalanceChange('mctPopBalance', Number(e.target.value), setMctPopBalance)}
-                          onFocus={() => handleBalanceFocus('mctPopBalance', mctPopBalance, 7)}
+                          onChange={(e) =>
+                            handleBalanceChange(
+                              'mctPopBalance',
+                              Number(e.target.value),
+                              setMctPopBalance,
+                            )
+                          }
+                          onFocus={() =>
+                            handleBalanceFocus(
+                              'mctPopBalance',
+                              mctPopBalance,
+                              7,
+                            )
+                          }
                           disabled={isBalanceFieldDisabled('mctPopBalance')}
                         />
                       </div>
@@ -473,14 +633,24 @@ const UserInfo = () => {
                         <div className="relative">
                           <input
                             className={`w-full rounded border border-stroke py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                              isBalanceFieldDisabled('tonBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                              isBalanceFieldDisabled('tonBalance')
+                                ? 'bg-gray-100 dark:bg-meta-4'
+                                : 'bg-gray dark:bg-meta-4'
                             }`}
                             type="number"
                             name="walletAddress"
                             id="walletAddress"
                             value={tonBalance}
-                            onChange={(e) => handleBalanceChange('tonBalance', Number(e.target.value), setTonBalance)}
-                            onFocus={() => handleBalanceFocus('tonBalance', tonBalance, 8)}
+                            onChange={(e) =>
+                              handleBalanceChange(
+                                'tonBalance',
+                                Number(e.target.value),
+                                setTonBalance,
+                              )
+                            }
+                            onFocus={() =>
+                              handleBalanceFocus('tonBalance', tonBalance, 8)
+                            }
                             disabled={isBalanceFieldDisabled('tonBalance')}
                           />
                         </div>
@@ -497,14 +667,28 @@ const UserInfo = () => {
                         </label>
                         <input
                           className={`w-full rounded border border-stroke py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                            isBalanceFieldDisabled('tonDailyBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                            isBalanceFieldDisabled('tonDailyBalance')
+                              ? 'bg-gray-100 dark:bg-meta-4'
+                              : 'bg-gray dark:bg-meta-4'
                           }`}
                           type="number"
                           name="displayName"
                           id="displayName"
                           value={tonDailyBalance}
-                          onChange={(e) => handleBalanceChange('tonDailyBalance', Number(e.target.value), setTonDailyBalance)}
-                          onFocus={() => handleBalanceFocus('tonDailyBalance', tonDailyBalance, 9)}
+                          onChange={(e) =>
+                            handleBalanceChange(
+                              'tonDailyBalance',
+                              Number(e.target.value),
+                              setTonDailyBalance,
+                            )
+                          }
+                          onFocus={() =>
+                            handleBalanceFocus(
+                              'tonDailyBalance',
+                              tonDailyBalance,
+                              9,
+                            )
+                          }
                           disabled={isBalanceFieldDisabled('tonDailyBalance')}
                         />
                       </div>
@@ -519,15 +703,31 @@ const UserInfo = () => {
                         <div className="relative">
                           <input
                             className={`w-full rounded border border-stroke py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                              isBalanceFieldDisabled('tonDirectBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                              isBalanceFieldDisabled('tonDirectBalance')
+                                ? 'bg-gray-100 dark:bg-meta-4'
+                                : 'bg-gray dark:bg-meta-4'
                             }`}
                             type="number"
                             name="walletAddress"
                             id="walletAddress"
                             value={tonDirectBalance}
-                            onChange={(e) => handleBalanceChange('tonDirectBalance', Number(e.target.value), setTonDirectBalance)}
-                            onFocus={() => handleBalanceFocus('tonDirectBalance', tonDirectBalance, 10)}
-                            disabled={isBalanceFieldDisabled('tonDirectBalance')}
+                            onChange={(e) =>
+                              handleBalanceChange(
+                                'tonDirectBalance',
+                                Number(e.target.value),
+                                setTonDirectBalance,
+                              )
+                            }
+                            onFocus={() =>
+                              handleBalanceFocus(
+                                'tonDirectBalance',
+                                tonDirectBalance,
+                                10,
+                              )
+                            }
+                            disabled={isBalanceFieldDisabled(
+                              'tonDirectBalance',
+                            )}
                           />
                         </div>
                       </div>
@@ -543,14 +743,28 @@ const UserInfo = () => {
                         </label>
                         <input
                           className={`w-full rounded border border-stroke py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                            isBalanceFieldDisabled('tonBinaryBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                            isBalanceFieldDisabled('tonBinaryBalance')
+                              ? 'bg-gray-100 dark:bg-meta-4'
+                              : 'bg-gray dark:bg-meta-4'
                           }`}
                           type="number"
                           name="displayName"
                           id="displayName"
                           value={tonBinaryBalance}
-                          onChange={(e) => handleBalanceChange('tonBinaryBalance', Number(e.target.value), setTonBinaryBalance)}
-                          onFocus={() => handleBalanceFocus('tonBinaryBalance', tonBinaryBalance, 11)}
+                          onChange={(e) =>
+                            handleBalanceChange(
+                              'tonBinaryBalance',
+                              Number(e.target.value),
+                              setTonBinaryBalance,
+                            )
+                          }
+                          onFocus={() =>
+                            handleBalanceFocus(
+                              'tonBinaryBalance',
+                              tonBinaryBalance,
+                              11,
+                            )
+                          }
                           disabled={isBalanceFieldDisabled('tonBinaryBalance')}
                         />
                       </div>
@@ -565,15 +779,31 @@ const UserInfo = () => {
                         <div className="relative">
                           <input
                             className={`w-full rounded border border-stroke py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                              isBalanceFieldDisabled('tonLeaderBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                              isBalanceFieldDisabled('tonLeaderBalance')
+                                ? 'bg-gray-100 dark:bg-meta-4'
+                                : 'bg-gray dark:bg-meta-4'
                             }`}
                             type="number"
                             name="walletAddress"
                             id="walletAddress"
                             value={tonLeaderBalance}
-                            onChange={(e) => handleBalanceChange('tonLeaderBalance', Number(e.target.value), setTonLeaderBalance)}
-                            onFocus={() => handleBalanceFocus('tonLeaderBalance', tonLeaderBalance, 12)}
-                            disabled={isBalanceFieldDisabled('tonLeaderBalance')}
+                            onChange={(e) =>
+                              handleBalanceChange(
+                                'tonLeaderBalance',
+                                Number(e.target.value),
+                                setTonLeaderBalance,
+                              )
+                            }
+                            onFocus={() =>
+                              handleBalanceFocus(
+                                'tonLeaderBalance',
+                                tonLeaderBalance,
+                                12,
+                              )
+                            }
+                            disabled={isBalanceFieldDisabled(
+                              'tonLeaderBalance',
+                            )}
                           />
                         </div>
                       </div>
@@ -589,14 +819,28 @@ const UserInfo = () => {
                         </label>
                         <input
                           className={`w-full rounded border border-stroke py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:text-white dark:focus:border-primary ${
-                            isBalanceFieldDisabled('tonPopBalance') ? 'bg-gray-100 dark:bg-meta-4' : 'bg-gray dark:bg-meta-4'
+                            isBalanceFieldDisabled('tonPopBalance')
+                              ? 'bg-gray-100 dark:bg-meta-4'
+                              : 'bg-gray dark:bg-meta-4'
                           }`}
                           type="number"
                           name="displayName"
                           id="displayName"
                           value={tonPopBalance}
-                          onChange={(e) => handleBalanceChange('tonPopBalance', Number(e.target.value), setTonPopBalance)}
-                          onFocus={() => handleBalanceFocus('tonPopBalance', tonPopBalance, 13)}
+                          onChange={(e) =>
+                            handleBalanceChange(
+                              'tonPopBalance',
+                              Number(e.target.value),
+                              setTonPopBalance,
+                            )
+                          }
+                          onFocus={() =>
+                            handleBalanceFocus(
+                              'tonPopBalance',
+                              tonPopBalance,
+                              13,
+                            )
+                          }
                           disabled={isBalanceFieldDisabled('tonPopBalance')}
                         />
                       </div>
