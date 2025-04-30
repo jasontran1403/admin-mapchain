@@ -236,7 +236,7 @@ const Settings = () => {
                           className="w-full rounded border border-stroke bg-gray py-3 pl-4 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                         >
                           {/* Generate options from 0 to 6 */}
-                          {[...Array(5)].map((_, index) => (
+                          {[...Array(6)].map((_, index) => (
                             <option key={index} value={index}>
                               Direct {index}
                             </option>

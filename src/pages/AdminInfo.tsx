@@ -35,6 +35,9 @@ const AdminInfo = () => {
 
   const [fetching, setFetching] = useState(false); // Loading state
   const [slippageRate, setSlippageRate] = useState(0);
+  const [maxoutTimeMCT, setMaxoutTimeMCT] = useState(0);
+  const [maxoutTimeUSDT, setMaxoutTimeUSDT] = useState(0);
+  const [maxoutTimeTON, setMaxoutTimeTON] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -100,6 +103,9 @@ const AdminInfo = () => {
         setSlipageSwap(response.data.slippageSwap);
         setFetching(false);
         setSlippageRate(response.data.slippageRate);
+        setMaxoutTimeMCT(response.data.maxoutTimeMCT);
+        setMaxoutTimeUSDT(response.data.maxoutTimeUSDT);
+        setMaxoutTimeTON(response.data.maxoutTimeTON);
       })
       .catch((error) => {
         console.log(error);
@@ -151,7 +157,10 @@ const AdminInfo = () => {
       kaspaMnemonics: kaspaPrivateKey,
       ethWalletAddress: ethWalletAddress,
       ethMnemonics: ethPrivateKey,
-      slippageRate: slippageRate > 0 ? slippageRate : 1
+      slippageRate: slippageRate > 0 ? slippageRate : 1,
+      maxoutTimeMCT: maxoutTimeMCT,
+      maxoutTimeUSDT: maxoutTimeUSDT,
+      maxoutTimeTON: maxoutTimeTON
     });
 
     let config = {
@@ -329,6 +338,65 @@ const AdminInfo = () => {
                           <option value={0}>Off</option>
                           <option value={1}>On</option>
                         </select>
+                      </div>
+                    </div>
+
+                    <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
+                      <div className="w-full sm:w-1/3">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="displayName"
+                        >
+                          Maxout
+                        </label>
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="number"
+                          name="displayName"
+                          id="displayName"
+                          value={maxoutTimeMCT}
+                          onChange={(e) => {
+                            setMaxoutTimeMCT(Number(e.target.value));
+                          }}
+                        />
+                      </div>
+
+                      <div className="w-full sm:w-1/3">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="displayName"
+                        >
+                          Maxout
+                        </label>
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="number"
+                          name="displayName"
+                          id="displayName"
+                          value={maxoutTimeUSDT}
+                          onChange={(e) => {
+                            setMaxoutTimeUSDT(Number(e.target.value));
+                          }}
+                        />
+                      </div>
+
+                      <div className="w-full sm:w-1/3">
+                        <label
+                          className="mb-3 block text-sm font-medium text-black dark:text-white"
+                          htmlFor="displayName"
+                        >
+                          Maxout
+                        </label>
+                        <input
+                          className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                          type="number"
+                          name="displayName"
+                          id="displayName"
+                          value={maxoutTimeTON}
+                          onChange={(e) => {
+                            setMaxoutTimeTON(Number(e.target.value));
+                          }}
+                        />
                       </div>
                     </div>
 
