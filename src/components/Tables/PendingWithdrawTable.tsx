@@ -74,7 +74,7 @@ const PendingWithdrawTable: React.FC<WithdrawTableProps> = ({ data, handleApprov
           Swal.fire({
             position: 'top-end',
             icon: 'success',
-            title: 'Sign out success',
+            title: 'Cancel withdraw order success',
             showConfirmButton: false,
             timer: 2000,
           }).then(() => {

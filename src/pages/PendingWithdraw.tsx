@@ -5,7 +5,7 @@ import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import PendingWithdrawTable from '../components/Tables/PendingWithdrawTable';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { URL } from "../types/constant";
+import { URL } from '../types/constant';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
 
@@ -32,15 +32,15 @@ const PendingWithdraw = () => {
         'ngrok-skip-browser-warning': '69420',
       },
     };
-  
+
     Axios.request(config)
       .then(() => {
         localStorage.removeItem('access_token'); // Clear access token
-        window.location.href = '/auth/signin';   // Redirect to signin on success
+        window.location.href = '/auth/signin'; // Redirect to signin on success
       })
       .catch(() => {
         localStorage.removeItem('access_token'); // Clear access token on error as well
-        window.location.href = '/auth/signin';   // Redirect to signin on error
+        window.location.href = '/auth/signin'; // Redirect to signin on error
       });
   };
 
@@ -58,8 +58,7 @@ const PendingWithdraw = () => {
       .then((response) => {
         setPendingWithdraw(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   }, [accessToken]);
 
   const handleApproveAll = () => {};
@@ -80,7 +79,7 @@ const PendingWithdraw = () => {
       reverseButtons: true,
       customClass: {
         confirmButton: 'custom-confirm-button', // Custom class for confirm button
-        cancelButton: 'custom-cancel-button',   // Custom class for cancel button
+        cancelButton: 'custom-cancel-button', // Custom class for cancel button
       },
       buttonsStyling: false,
     }).then((result) => {
@@ -94,12 +93,10 @@ const PendingWithdraw = () => {
             'ngrok-skip-browser-warning': '69420',
           },
         };
-    
+
         Axios.request(config)
           .then((response) => {
-            if (response.data === "ok") {
-              setButtonDisabled(true);
-
+            if (response.data === 'ok') {
               Swal.fire({
                 position: 'top-end',
                 icon: 'success',
@@ -108,13 +105,14 @@ const PendingWithdraw = () => {
                 timer: 2000,
               }).then(() => {
                 window.location.reload();
+                setButtonDisabled(true);
               });
             } else {
               setButtonDisabled(false);
 
               toast.error(response.data, {
                 position: 'top-right',
-                autoClose: 1500
+                autoClose: 1500,
               });
             }
           })
@@ -125,8 +123,6 @@ const PendingWithdraw = () => {
           });
       }
     });
-
-    
   };
 
   return (
