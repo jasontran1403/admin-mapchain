@@ -8,6 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { URL } from '../types/constant';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
+import LoadingSpinner from '../components/LoadingSpinner';
+import Loader from '../common/Loader';
 
 const PendingWithdraw = () => {
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -69,6 +71,8 @@ const PendingWithdraw = () => {
       return;
     }
 
+    setButtonDisabled(true);
+
     Swal.fire({
       title: 'Confirm withdraw',
       text: `Are you sure you want to approve`,
@@ -84,7 +88,6 @@ const PendingWithdraw = () => {
       buttonsStyling: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        setButtonDisabled(true);
         let config = {
           method: 'get',
           url: `${URL}admin/approve/${code}`,
@@ -105,11 +108,9 @@ const PendingWithdraw = () => {
                 timer: 2000,
               }).then(() => {
                 window.location.reload();
-                setButtonDisabled(true);
               });
             } else {
               setButtonDisabled(false);
-
               toast.error(response.data, {
                 position: 'top-right',
                 autoClose: 1500,
@@ -118,9 +119,10 @@ const PendingWithdraw = () => {
           })
           .catch((error) => {
             setButtonDisabled(false);
-
             console.log(error);
           });
+      } else {
+        setButtonDisabled(false);
       }
     });
   };
@@ -133,6 +135,11 @@ const PendingWithdraw = () => {
           handleApprove={handleApprove}
           data={pendingWithdraw}
         />
+        {buttonDisabled && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-70">
+            <div className="h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"></div>
+          </div>
+        )}
       </div>
     </>
   );
