@@ -104,13 +104,13 @@ const PendingDepositMCT = () => {
 
         Axios.request(config)
           .then((response) => {
-            if (response.data === 'TON Collect is processing, result will be sent to telegram group.') {
+            if (response.data === 'TON Collect is processing, result will be sent to telegram group.' || response.data === 'MCT Collect is processing, result will be sent to telegram group.' ) {
               setButtonDisabled(true);
 
               Swal.fire({
                 position: 'top-end',
                 icon: 'success',
-                title: 'TON Collect is processing, result will be sent to telegram group.',
+                title: response.data,
                 showConfirmButton: false,
                 timer: 2000,
               }).then(() => {
