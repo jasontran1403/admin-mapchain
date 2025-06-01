@@ -82,7 +82,7 @@ const PendingDeposit = () => {
       text: `Are you sure you want to collect`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, transfer it!',
+      confirmButtonText: 'Yes, collect it!',
       cancelButtonText: 'No, cancel',
       reverseButtons: true,
       customClass: {

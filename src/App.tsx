@@ -168,10 +168,10 @@ function App() {
           }
         />
         <Route
-          path="/pending-deposit-mct"
+          path="/pending-deposit-ton"
           element={
             <>
-              <PageTitle title="Pending Deposit MCT" />
+              <PageTitle title="Pending Deposit TON" />
               <PendingDepositMCT />
             </>
           }

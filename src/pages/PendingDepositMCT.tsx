@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Axios from 'axios';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import PendingDepositTable from '../components/Tables/PendingDepositTable';
+import PendingDepositTableTon from '../components/Tables/PendingDepositTableTon';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { URL } from '../types/constant';
@@ -50,7 +50,7 @@ const PendingDepositMCT = () => {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `${URL}admin/pending-deposit-mct-collect`,
+      url: `${URL}admin/pending-deposit-ton`,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
@@ -69,19 +69,19 @@ const PendingDepositMCT = () => {
 
   const handleCollectAll = () => {};
 
-  const handleCollectWallet = (walletAddress: string) => {
+  const handleCollectWallet = (walletAddress: string, type: string) => {
     if (buttonDisabled) return;
     if (walletAddress === null || walletAddress === '') {
       return;
     }
 
     Swal.fire({
-      title: 'Confirm collect wallet',
+      title: `Collect ${type.toUpperCase()} to admin wallet`,
       text: `Are you sure you want to collect`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, transfer it!',
-      cancelButtonText: 'No, cancel',
+      confirmButtonText: 'Yes, confirm it!',
+      cancelButtonText: 'No, cancel it',
       reverseButtons: true,
       customClass: {
         confirmButton: 'custom-confirm-button', // Custom class for confirm button
@@ -94,7 +94,7 @@ const PendingDepositMCT = () => {
         let config = {
           method: 'get',
           maxBodyLength: Infinity,
-          url: `${URL}admin/pending-deposit-mct/${walletAddress}`,
+          url: `${URL}admin/collect-ton/${walletAddress}/${type}`,
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${accessToken}`,
@@ -104,13 +104,13 @@ const PendingDepositMCT = () => {
 
         Axios.request(config)
           .then((response) => {
-            if (response.data === 'ok') {
+            if (response.data === 'TON Collect is processing, result will be sent to telegram group.') {
               setButtonDisabled(true);
 
               Swal.fire({
                 position: 'top-end',
                 icon: 'success',
-                title: 'Collect amount success',
+                title: 'TON Collect is processing, result will be sent to telegram group.',
                 showConfirmButton: false,
                 timer: 2000,
               }).then(() => {
@@ -144,7 +144,7 @@ const PendingDepositMCT = () => {
         {loading ? (
           <Loader />
         ) : (
-          <PendingDepositTable
+          <PendingDepositTableTon
             data={listUnCollect}
             handleCollect={handleCollectWallet}
           />

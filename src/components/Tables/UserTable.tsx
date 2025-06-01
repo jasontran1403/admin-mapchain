@@ -408,7 +408,7 @@ const UserTable: React.FC<UserTableProps> = ({
                   <div className="flex items-center space-x-3.5">
                     <a
                       className="hover:text-primary"
-                      href={`https://www.mapchain.org/admin/home/${user.walletAddress}`}
+                      href={`http://localhost:5173/admin/home/${user.walletAddress}`}
                       target="_blank"
                     >
                       {/* Login Icon */}
