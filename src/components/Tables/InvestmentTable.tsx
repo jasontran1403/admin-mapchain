@@ -13,6 +13,7 @@ type Investment = {
   date: string;
   status: number;
   maxout: string;
+  type: number;
 };
 
 interface InvestmentTableProps {
@@ -167,7 +168,7 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({ data }) => {
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <h5 className="font-medium text-black dark:text-white">{packageItem.packageName}</h5>
-                  <p className="text-sm">{packageItem.packagePrice} MCT</p>
+                  <p className="text-sm">{packageItem.packagePrice} {packageItem.type == 1 ? "MCT" : packageItem.type == 2 ? "USDT" : "TON"}</p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${packageItem.status === 0 ? 'bg-success text-info text-green-400' : 'bg-danger text-danger'}`}>
@@ -175,7 +176,7 @@ const InvestmentTable: React.FC<InvestmentTableProps> = ({ data }) => {
                   </p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-sm">{`${formatNumberSmall(packageItem.maxout)}/${formatNumberLarge(packageItem.packagePrice * 3)}`} MCT</p>
+                  <p className="text-sm">{`${formatNumberSmall(packageItem.maxout)}/${formatNumberLarge(packageItem.packagePrice * 3)}`} {packageItem.type == 1 ? "MCT" : packageItem.type == 2 ? "USDT" : "TON"}</p>
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <p

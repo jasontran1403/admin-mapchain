@@ -429,3 +429,10 @@ span.flatpickr-weekday,
 [x-cloak] {
   display: none !important;
 }
+
+@media only screen and (max-width: 480px) {
+  .Toastify__toast-container {
+    top: 80px !important;
+    right: 0 !important;
+  }
+}

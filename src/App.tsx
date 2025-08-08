@@ -40,6 +40,8 @@ import PendingWithdrawEth from './pages/PendingWithdrawEth';
 import PendingWithdrawKas from './pages/PendingWithdrawKas';
 import AdminChatbox from './pages/AdminChatbox';
 import UserInfo from './pages/UserInfo';
+import ProductTable from './pages/ProductTable';
+import AdminProductTable from './components/Tables/AdminProductTable';
 
 
 function App() {
@@ -281,6 +283,15 @@ function App() {
             <>
               <PageTitle title="List users" />
               <UserTable />
+            </>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <>
+              <PageTitle title="List products" />
+              <AdminProductTable />
             </>
           }
         />
